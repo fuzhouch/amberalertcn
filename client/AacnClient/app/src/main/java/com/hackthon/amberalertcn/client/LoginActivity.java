@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 /**
- * µÇÂ¼°Ù¶ÈÕËºÅ³õÊ¼»¯ChannelµÄActivity
+ * ï¿½ï¿½Â¼ï¿½Ù¶ï¿½ï¿½ËºÅ³ï¿½Ê¼ï¿½ï¿½Channelï¿½ï¿½Activity
  */
 public class LoginActivity extends Activity {
 
@@ -25,7 +25,6 @@ public class LoginActivity extends Activity {
     /** redirect uri ÖµÎª"oob" */
     private static final String REDIRECT = "oob";
     private final String API_KEY = "TfBK6mlV3UybD2CgirQVd8O2";
-    /** ¿ª·¢ÖÐÐÄ */
     static final String DEV_CENTER = "https://openapi.baidu.com/";
 
     @Override
@@ -42,7 +41,7 @@ public class LoginActivity extends Activity {
     }
 
     /**
-     * »ñÈ¡ access tokenµÄurl
+     * ï¿½ï¿½È¡ access tokenï¿½ï¿½url
      */
     private void getAccessToken() {
         String url = DEV_CENTER + "oauth/2.0/authorize?"
@@ -56,7 +55,7 @@ public class LoginActivity extends Activity {
     }
 
     /**
-     * ÉèÖÃWebviewµÄWebviewClient
+     * ï¿½ï¿½ï¿½ï¿½Webviewï¿½ï¿½WebviewClient
      *
      * @param webview
      *            webview
@@ -86,7 +85,7 @@ public class LoginActivity extends Activity {
                     url = "http://localhost/?"
                             + url.substring(fragmentIndex + 1);
 
-                    // ´ÓURLÖÐ»ñµÃAccess token
+                    // ï¿½ï¿½URLï¿½Ð»ï¿½ï¿½Access token
                     String accessToken = Uri.parse(url).getQueryParameter(
                             "access_token");
                     Log.d(TAG, ">>> Get Original AccessToken: \r\n"
@@ -96,7 +95,7 @@ public class LoginActivity extends Activity {
                             "get access token success", Toast.LENGTH_SHORT)
                             .show();
 
-                    // ?µÇÂ¼
+                    // ?ï¿½ï¿½Â¼
                     /*
                     Intent intent = new Intent(Utils.ACTION_LOGIN);
                     intent.setClass(LoginActivity.this, PushDemoActivity.class);
