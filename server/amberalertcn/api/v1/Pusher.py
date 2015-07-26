@@ -31,7 +31,7 @@ def pushAlert_to_users(user_list, message):
 		optional[Channel.USER_ID] = user[0]
 		optional[Channel.CHANNEL_ID] = user[1]
 		optional[Channel.MESSAGE_TYPE] = 1
-		alertMessage = "{'title':'%s', 'description':'%s', 'amber_alert_id':'%s', 'brief':'%s'}" % (message[0], message[1], message[2], message[3])
+		alertMessage = "{'title':'%s', 'description':'%s', 'custom_content': { 'brief':'%s', 'amber_alert_id':'%s', 'from_user_id':'%s' }}" % (message[0], message[1], message[2], message[3], message[4])
 		#jsonMessage = json.dumps(alertMessage)
 		ret = channel.pushMessage(push_type, alertMessage, message_key, optional)
 		print ret
@@ -46,7 +46,7 @@ def pushUpdate_to_users(user_list, message):
 		optional[Channel.USER_ID] = user[0]
 		optional[Channel.CHANNEL_ID] = user[1]
 		optional[Channel.MESSAGE_TYPE] = 1
-		updateMessage = "{'title':'%s', 'description':'%s', 'amber_alert_id':'%s', 'brief':'%s', 'from_user_id':'%s'}" % (message[0], message[1], message[2], message[3], message[4])
+		updateMessage = "{'title':'%s', 'description':'%s', 'custom_content': { 'brief':'%s', 'bramber_alert_idief':'%s', 'from_user_id':'%s' }}" % (message[0], message[1], message[2], message[3], message[4])
 		#jsonMessage = json.dumps(updateMessage)
 		ret = channel.pushMessage(push_type, updateMessage, message_key, optional)
 		print ret
@@ -61,12 +61,12 @@ channel_id = 4232420857743892347
 
 def test_pushAlert_to_users():
 	userlist = [(user_id, channel_id)]
-	message = ['AlertTitle', 'AlertDesc', 'AlertBrief', 'amber_alert_id']
+	message = ['AlertTitle', 'AlertDesc', 'AlertBrief', 'amber_alert_id', 'from_user_id']
 	pushAlert_to_users(userlist, message)
 
 def test_pushUpdate_to_users():
 	userlist = [(user_id, channel_id)]
-	message = ['UpdateTitle', 'UpdateDesc', 'UpdateBrief', 'amber_alert_id', 'from_user_id id']
+	message = ['UpdateTitle', 'UpdateDesc', 'UpdateBrief', 'amber_alert_id', 'from_user_id']
 	pushAlert_to_users(userlist, message)
 
 test_pushAlert_to_users()
