@@ -27,6 +27,8 @@ public class LoginActivity extends Activity {
     private final String API_KEY = "TfBK6mlV3UybD2CgirQVd8O2";
     static final String DEV_CENTER = "https://openapi.baidu.com/";
 
+    public static final String ACCESS_TOKEN = "AccessToken";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +103,10 @@ public class LoginActivity extends Activity {
                     intent.setClass(LoginActivity.this, PushDemoActivity.class);
                     intent.putExtra(Utils.EXTRA_ACCESS_TOKEN, accessToken);
                     startActivity(intent);*/
+
+                    Intent result = new Intent();
+                    result.putExtra(ACCESS_TOKEN, accessToken);
+                    setResult(Activity.RESULT_OK, result);
 
                     finish();
                 }

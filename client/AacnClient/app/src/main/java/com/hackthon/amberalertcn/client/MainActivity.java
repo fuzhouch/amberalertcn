@@ -1,5 +1,6 @@
 package com.hackthon.amberalertcn.client;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -7,18 +8,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.util.Log;
 
 public class MainActivity extends ActionBarActivity {
 
     private boolean m_isLogin = false;
     private Button m_btnLogin;
+    private String accessToken;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        m_btnLogin = (Button)findViewById(R.id.btnLogin);
+        m_btnLogin = (Button) findViewById(R.id.btnLogin);
         m_btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -55,16 +60,18 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (resultCode)
-        {
+        switch (requestCode) {
             case 100:
-                m_isLogin = true;
+                if (resultCode == Activity.RESULT_OK) {
+                    m_isLogin = true;
+                    accessToken = data.getStringExtra(LoginActivity.ACCESS_TOKEN);
+                    Log.i(TAG, "The access token is " + accessToken);
+                }
                 break;
         }
     }
 
     // TODO: just prototype
-    private void sendRequestToServer(String contactInfo)
-    {
+    private void sendRequestToServer(String contactInfo) {
     }
 }
