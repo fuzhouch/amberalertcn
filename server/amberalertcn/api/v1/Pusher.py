@@ -52,13 +52,11 @@ def pushUpdate_to_users(user_list, message):
 		print ret
 
 
-###############################################################
+###
 # Test
-###############################################################
-
+###
 user_id = "985986247753796219"
 channel_id = 4232420857743892347
-
 def test_pushAlert_to_users():
 	userlist = [(user_id, channel_id)]
 	message = ['AlertTitle', 'AlertDesc', 'AlertBrief', 'amber_alert_id', 'from_user_id']
@@ -69,13 +67,10 @@ def test_pushUpdate_to_users():
 	message = ['UpdateTitle', 'UpdateDesc', 'UpdateBrief', 'amber_alert_id', 'from_user_id']
 	pushAlert_to_users(userlist, message)
 
-test_pushAlert_to_users()
-test_pushUpdate_to_users()
-###############################################################
+
+###
 # Examples
-###############################################################
-
-
+###
 def test_pushMessage_to_user():
 	c = Channel(apiKey, secretKey)
 	push_type = 1
