@@ -45,9 +45,11 @@ class Application(flask.Flask):
             flask.Flask.__init__(self, self.__app_name)
         self.config.from_object(config)
 
-
     def app_name(self):
         return self.__app_name
+
+    def current_core(self):
+        return flask.current_app.config["AACN_CORE"]
 
 class View(flask.Blueprint):
     """
