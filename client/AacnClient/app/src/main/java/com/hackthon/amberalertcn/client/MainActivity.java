@@ -100,6 +100,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private static final String HTTP_RESPONSE_AMBER_USER_ID = "amber_user_id";
+    private static final String HTTP_RESPONSE_AMBER_DEVICE_ID = "amber_device_id";
+
     public class BaiduPushHandler extends JsonHttpResponseHandler{
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -107,9 +110,9 @@ public class MainActivity extends ActionBarActivity {
 
             try {
                 int status = response.getInt("status_code");
-                String amberUserId = response.getString("amber_user_id");
-                String amberDeviceId = response.getString("amber_device_id");
-                Log.i(TAG, "status=" + status + ":" + statusCode + "userId=" + amberUserId + " amberDevId=" + amberDeviceId);
+                String amberUserId = response.getString(HTTP_RESPONSE_AMBER_USER_ID);
+                String amberDeviceId = response.getString(HTTP_RESPONSE_AMBER_DEVICE_ID);
+                Log.i(TAG, "status=" +  statusCode + ", userId=" + amberUserId + ", amberDevId=" + amberDeviceId);
             }
             catch (JSONException e)
             {
