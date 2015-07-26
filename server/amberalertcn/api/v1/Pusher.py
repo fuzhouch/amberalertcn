@@ -21,11 +21,11 @@ class Pusher(object):
 	#message: ["title", "description", "amber_alert_id", "from_user_id"]
     def pushAlert_to_users(self, user_list, message):
         for user in user_list:
-            push_to_user(user, message)
+            self.push_to_user(user, message)
 
     def pushUpdate_to_users(self, user_list, message):
         for user in user_list:
-            push_to_user(user, message)
+            self.push_to_user(user, message)
 		
     def push_to_user(self, user, message):
         channel = Channel(self.__secret.apiKey, self.__secret.secretKey)
