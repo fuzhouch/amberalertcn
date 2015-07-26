@@ -18,6 +18,14 @@ import com.baidu.android.pushservice.PushManager;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -92,12 +100,57 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public class BaiduPushHandler extends JsonHttpResponseHandler{
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            super.onSuccess(statusCode, headers, response);
+
+            try {
+                int status = response.getInt("status_code");
+                String amberUserId = response.getString("amber_user_id");
+                String amberDeviceId = response.getString("amber_device_id");
+                Log.i(TAG, "status=" + status + ":" + statusCode + "userId=" + amberUserId + " amberDevId=" + amberDeviceId);
+            }
+            catch (JSONException e)
+            {
+                Log.e(TAG, "Exception", e);
+            }
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+            super.onFailure(statusCode, headers, throwable, errorResponse);
+            Log.e(TAG, "ErrorArray", throwable);
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            super.onFailure(statusCode, headers, throwable, errorResponse);
+            Log.e(TAG, "ErrorObj", throwable);
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            super.onFailure(statusCode, headers, responseString, throwable);
+            Log.e(TAG, "Error:" + responseString, throwable);
+        }
+    }
+
     private void sendRequestToServer(String userId, String channelId) {
         // TODO: send to baidu
+
+        String url = "http://10.172.120.69:5001/api/v1/updatelocation?&user_id=%s&channel_id=%s&longitude=%f&latitude=%f";
+        String formattedUrl = String.format(url, m_userId, m_channelId, m_longtitude, m_latitude);
+        Log.i(TAG, "sendRequestToServer: " + formattedUrl);
+        AsyncHttpClient httpClient = new AsyncHttpClient();
+        httpClient.post(formattedUrl, null, new BaiduPushHandler());
     }
 
     private String m_userId;
     private String m_channelId;
+    private double m_latitude;
+    private double m_longtitude;
+
 
     private BroadcastReceiver m_userIdReceiver = new BroadcastReceiver() {
         @Override
@@ -130,6 +183,8 @@ public class MainActivity extends ActionBarActivity {
             sb.append(location.getLatitude());
             sb.append("\nlontitude : ");
             sb.append(location.getLongitude());
+            m_longtitude = location.getLongitude();
+            m_latitude = location.getLatitude();
             sb.append("\nradius : ");
             sb.append(location.getRadius());
             if (location.getLocType() == BDLocation.TypeGpsLocation) {// GPS定位结果
