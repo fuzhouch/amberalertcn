@@ -22,33 +22,59 @@ message_key = "key1"
 tagname = "test_tag"
 
 #user_list: list of (user_id, user_channel)
-#message: ["title":"", "brief":"", "amber_alert_id":""]
+#message: ["title", "description", "amber_alert_id", "brief"]
 def pushAlert_to_users(user_list, message):
 	for user in user_list:
 		channel = Channel(apiKey, secretKey)
 		push_type = 1
+		optional = dict()
 		optional[Channel.USER_ID] = user[0]
 		optional[Channel.CHANNEL_ID] = user[1]
 		optional[Channel.MESSAGE_TYPE] = 1
-		pushMessage = json.dumps(message)
-		ret = channel.pushMessage(push_type, pushMessage, message_key, optional)
+		alertMessage = "{'title':'%s', 'description':'%s', 'amber_alert_id':'%s', 'brief':'%s'}" % (message[0], message[1], message[2], message[3])
+		#jsonMessage = json.dumps(alertMessage)
+		ret = channel.pushMessage(push_type, alertMessage, message_key, optional)
+		print ret
 
 #user: tuple of user, (user_id, channel_id)
-#message: ["amber_alert_id":"", "message":"", "from_user_id":""]
+#message: ["title", "description", "amber_alert_id", "brief", "from_user_id"]
 def pushUpdate_to_users(user_list, message):
 	for user in user_list:
 		channel = Channel(apiKey, secretKey)
 		push_type = 1
+		optional = dict()
 		optional[Channel.USER_ID] = user[0]
 		optional[Channel.CHANNEL_ID] = user[1]
 		optional[Channel.MESSAGE_TYPE] = 1
-		pushMessage = json.dumps(message)
-		ret = channel.pushMessage(push_type, pushMessage, message_key, optional)
+		updateMessage = "{'title':'%s', 'description':'%s', 'amber_alert_id':'%s', 'brief':'%s', 'from_user_id':'%s'}" % (message[0], message[1], message[2], message[3], message[4])
+		#jsonMessage = json.dumps(updateMessage)
+		ret = channel.pushMessage(push_type, updateMessage, message_key, optional)
+		print ret
 
 
+###############################################################
+# Test
+###############################################################
+
+user_id = "985986247753796219"
+channel_id = 4232420857743892347
+
+def test_pushAlert_to_users():
+	userlist = [(user_id, channel_id)]
+	message = ['AlertTitle', 'AlertDesc', 'AlertBrief', 'amber_alert_id']
+	pushAlert_to_users(userlist, message)
+
+def test_pushUpdate_to_users():
+	userlist = [(user_id, channel_id)]
+	message = ['UpdateTitle', 'UpdateDesc', 'UpdateBrief', 'amber_alert_id', 'from_user_id id']
+	pushAlert_to_users(userlist, message)
+
+test_pushAlert_to_users()
+test_pushUpdate_to_users()
 ###############################################################
 # Examples
 ###############################################################
+
 
 def test_pushMessage_to_user():
 	c = Channel(apiKey, secretKey)
@@ -132,7 +158,7 @@ def test_queryDeviceType():
 	ret = c.queryDeviceType(channel_id)
 	print ret
 
-test_pushMessage_to_user()
+#test_pushMessage_to_user()
 """
 if(__name__ == '__main__'):
 	test_pushMessage_to_user()
