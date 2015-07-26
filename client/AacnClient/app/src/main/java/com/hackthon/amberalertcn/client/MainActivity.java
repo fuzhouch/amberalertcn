@@ -103,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String HTTP_RESPONSE_AMBER_USER_ID = "amber_user_id";
     private static final String HTTP_RESPONSE_AMBER_DEVICE_ID = "amber_device_id";
 
-    public class BaiduPushHandler extends JsonHttpResponseHandler{
+    public class BaiduPushHandler extends JsonHttpResponseHandler {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             super.onSuccess(statusCode, headers, response);
@@ -112,10 +112,8 @@ public class MainActivity extends ActionBarActivity {
                 int status = response.getInt("status_code");
                 String amberUserId = response.getString(HTTP_RESPONSE_AMBER_USER_ID);
                 String amberDeviceId = response.getString(HTTP_RESPONSE_AMBER_DEVICE_ID);
-                Log.i(TAG, "status=" +  statusCode + ", userId=" + amberUserId + ", amberDevId=" + amberDeviceId);
-            }
-            catch (JSONException e)
-            {
+                Log.i(TAG, "status=" + statusCode + ", userId=" + amberUserId + ", amberDevId=" + amberDeviceId);
+            } catch (JSONException e) {
                 Log.e(TAG, "Exception", e);
             }
         }
@@ -159,8 +157,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action == PushReveiver.USER_ID_INTENT)
-            {
+            if (action == PushReveiver.USER_ID_INTENT) {
                 m_userId = intent.getStringExtra(PushReveiver.EXTRA_USER_ID);
                 m_channelId = intent.getStringExtra(PushReveiver.EXTRA_CHANNEL_ID);
                 Log.i(TAG, "UserId=" + m_userId + ", ChannelId = " + m_channelId);

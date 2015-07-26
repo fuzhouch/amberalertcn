@@ -1,5 +1,7 @@
 package com.hackthon.amberalertcn.client;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 
 import com.baidu.android.pushservice.PushMessageReceiver;
@@ -7,6 +9,7 @@ import com.baidu.android.pushservice.PushMessageReceiver;
 import java.util.List;
 
 import android.content.Intent;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -52,7 +55,20 @@ public class PushReveiver extends PushMessageReceiver {
 
     @Override
     public void onMessage(Context context, String s, String s1) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentTitle(s);
+        builder.setContentText(s1);
 
+        Intent resultIntent = new Intent(context, MainActivity.class);
+        resultIntent.putExtra("STRING", s);
+        resultIntent.putExtra("STRING1", s1);
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(1, builder.build());
     }
 
     @Override
