@@ -5,6 +5,8 @@ import sys
 import os
 current = os.getcwd()
 sys.path.append(current)
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 import amberalertcn
 import amberalertcn.api.v1

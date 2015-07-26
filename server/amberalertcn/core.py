@@ -16,7 +16,6 @@ class Core(object):
                 user_id, channel_id)
         if amber_device_id is None:
             # It is a new device ID, but can it be a new user ID
-            print("Create new device ID")
             amber_user_id = dbaccess.query_user_id_from_baidu(\
                     user_id, channel_id)
             if amber_user_id is None:
@@ -76,6 +75,34 @@ class Core(object):
                 "alerted_count" : len(matched_device_list)\
                 }
 
-    def send_message(self, sender_id, amber_alert_id, message):
-        return utils.make_json_response({\
-                "status_code": utils.httplib.OK })
+    def send_message(self, user_id, channel_id, amber_alert_id, message):
+        dbaccess = self.__dbaccess
+        amber_from_user_id = dbaccess.query_user_id_from_baidu(\
+                user_id, channel_id)
+        amber_device_id = dbaccess.query_device_id_from_baidu(\
+                user_id, channel_id)
+        assert amber_device_id is not None
+        assert amber_from_user_id is not None
+
+        # If this is the first time you reply, I assume you want to
+        # follow this alert.
+        found = dbaccess.query_amber_user_in_alert_follow_list(\
+                amber_alert_id, amber_from_user_id)
+        if not found:
+            dbaccess.insert_amber_user_to_alert_follow_list(\
+                    amber_alert_id, amber_from_user_id)
+
+        matched_device_list = dbaccess.query_device_list_following_alert(\
+                amber_alert_id)
+
+        message_info = [
+                u"我看见那孩子了！".encode('utf-8'), # title
+                message.encode('utf-8'), # description
+                amber_alert_id,
+                amber_from_user_id
+                ]
+        p = pusher.Pusher(flask.current_app.config["AACN_SECRET"])
+        result_json = p.pushUpdate_to_users(matched_device_list, message_info)
+        dbaccess.add_message_to_chatroom(amber_alert_id, message_info)
+
+        return { "status_code": utils.httplib.OK }

@@ -3,6 +3,8 @@
 import flask
 from amberalertcn import httplib
 import hashlib
+import datetime
+import calendar
 
 ACCEPTED_CONTENT_ENCODING = "utf-8"
 
@@ -42,3 +44,6 @@ def make_json_response(data):
         resp.content_encoding = ACCEPTED_CONTENT_ENCODING
     return resp
 
+def get_millisecond_unix_epoch():
+    now = datetime.datetime.utcnow()
+    return calendar.timegm(now.utctimetuple())

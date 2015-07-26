@@ -5,6 +5,7 @@ import amberalertcn
 import flask
 import functools
 import amberalertcn.utils as utils
+import json
 
 api = amberalertcn.View('apiv1')
 
@@ -38,15 +39,18 @@ def publish_alert():
         print(e)
         return utils.make_json_response(None)
 
-@api.route('sendmessage', methods=['POST'])
+@api.route('/sendmessage', methods=['POST'])
 def send_message():
     try:
-        sender_id = int(flask.request.args.get('sender_id'))
-        receiver_id = int(flask.request_args.get('alert_id'))
-        message_json_str = flask.request.data
-        message = json.loads(message_json_str)
+        user_id = int(flask.request.args.get('user_id'))
+        channel_id = int(flask.request.args.get('channel_id'))
+        receiver = int(flask.request.args.get('amber_alert_id'))
+        message_json_str = flask.request.data.encode('utf-8')
+        message_json = json.loads(message_json_str)
+        message = message_json["message"]
         core = amberalertcn.Application.current_core()
-        resp = core.send_message(sender_id, receiver_id, message)
+        resp = core.send_message(user_id, channel_id, receiver, message)
         return utils.make_json_response(resp)
     except Exception as e:
+        print(e)
         return utils.make_json_response(None)
