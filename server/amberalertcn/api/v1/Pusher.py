@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# _*_ coding: UTF-8 _*_
+# -*- coding: utf-8 -*-
 
 import sys
 import time
@@ -21,24 +21,24 @@ class Pusher(object):
 	#message: ["title", "description", "amber_alert_id", "from_user_id"]
     def pushAlert_to_users(self, user_list, message):
         for user in user_list:
-            push_to_user(user, message)
+            self.push_to_user(user, message)
 
     def pushUpdate_to_users(self, user_list, message):
-		for user in user_list:
-			push_to_user(user, message)
+        for user in user_list:
+            self.push_to_user(user, message)
 		
-	def push_to_user(self, user, message):
-		channel = Channel(self.__secret.apiKey, self.__secret.secretKey)
-		push_type = 1
-		optional = dict()
-		optional[Channel.USER_ID] = user[0]
-		optional[Channel.CHANNEL_ID] = user[1]
-		optional[Channel.MESSAGE_TYPE] = 1
-		alertMessage = "{'title':'%s', 'description':'%s', 'custom_content': { 'amber_alert_id':'%s', 'from_user_id':'%s' }}" % (message[0], message[1], message[2], message[3])
-		#jsonMessage = json.dumps(updateMessage)
-		ret = channel.pushMessage(push_type, alertMessage, message_key, optional)
-		print (ret)
-		return ret
+    def push_to_user(self, user, message):
+        channel = Channel(self.__secret.apiKey, self.__secret.secretKey)
+        push_type = 1
+        optional = dict()
+        optional[Channel.USER_ID] = user[0]
+        optional[Channel.CHANNEL_ID] = user[1]
+        optional[Channel.MESSAGE_TYPE] = 0
+        alertMessage = "{'title':'%s', 'description':'%s', 'custom_content': { 'amber_alert_id':'%s', 'from_user_id':'%s' }}" % (message[0], message[1], message[2], message[3])
+        #jsonMessage = json.dumps(updateMessage)
+        ret = channel.pushMessage(push_type, alertMessage, message_key, optional)
+        print (ret)
+        return ret
 
 ###
 # Test

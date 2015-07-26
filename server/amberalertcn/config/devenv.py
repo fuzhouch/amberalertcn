@@ -4,6 +4,7 @@
 import amberalertcn.core
 import amberalertcn.api.v1.Secret as secret
 import amberalertcn.api.v1.Pusher as pusher
+import amberalertcn.utils as utils
 
 # In dev environment I use fake data.
 class FakeDBAccess(object):
@@ -18,13 +19,12 @@ class FakeDBAccess(object):
         self.__baidu_to_amber_user = {}
         self.__amber_device_to_location = {}
         self.__alert_info = {}
+        self.__amber_alert_chatroom = {}
+        self.__amber_alert_follow_list = {}
 
         self.__amber_user_sequence = 1
         self.__amber_device_sequence = 1
         self.__amber_alert_sequence = 1
-
-    def create_amber_alert_id(self):
-        datetime.datetime.now()
 
     @staticmethod
     def get_baidu_user_channel_key(baidu_user_id, baidu_channel_id):
@@ -96,6 +96,8 @@ class FakeDBAccess(object):
             self.__amber_user_to_alert[amber_device_id].append(\
                     new_amber_alert_id)
 
+        self.__amber_alert_chatroom[new_amber_alert_id] = []
+        self.__amber_alert_follow_list[new_amber_alert_id] = []
         return new_amber_alert_id
 
     def query_device_list_in_range(self, amber_device_id, distance,\
@@ -118,6 +120,32 @@ class FakeDBAccess(object):
                     baidu_info = self.__amber_device_to_baidu[each_device]
                     matched_list.append(baidu_info)
         return matched_list
+
+    def query_amber_user_in_alert_follow_list(self, amber_alert_id,\
+            amber_from_user_id):
+        follow_list = self.__amber_alert_follow_list[amber_alert_id]
+        if amber_from_user_id in follow_list:
+            return True
+        return False
+
+    def insert_amber_user_to_alert_follow_list(self,\
+            amber_alert_id, amber_user_id):
+        self.__amber_alert_follow_list[amber_alert_id].append(amber_user_id)
+
+    def query_device_list_following_alert(self, amber_alert_id):
+        found_amber_user_ids = self.__amber_alert_follow_list[amber_alert_id]
+        matched_device_list = []
+        for each_user in found_amber_user_ids:
+            device_list = self.__amber_user_to_device[each_user]
+            for each_device_id in device_list:
+                baidu_id = self.__amber_device_to_baidu[each_device_id]
+                matched_device_list.append(baidu_id)
+        return matched_device_list
+
+    def add_message_to_chatroom(self, amber_alert_id, message_info):
+        ts = utils.get_millisecond_unix_epoch()
+        message_info.append(ts)
+        self.__amber_alert_chatroom[amber_alert_id].append(message_info)
 
 AACN_SECRET = secret.Secret() # Find secret.ini from current folder.
 AACN_CORE = amberalertcn.core.Core(FakeDBAccess(), None)
