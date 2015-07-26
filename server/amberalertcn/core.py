@@ -63,7 +63,6 @@ class Core(object):
         message = [
                 "警告：有孩子走失！", # title
                 "三岁，有点胖，大红帽子绿上衣，包包头", # description
-                "三岁，有点胖，大红帽子绿上衣，包包头", # description
                 amber_alert_id, # amber_alert_id
                 amber_from_user_id # from_user_id
                 ]
