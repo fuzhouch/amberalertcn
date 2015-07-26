@@ -5,6 +5,8 @@ import android.content.Context;
 import com.baidu.android.pushservice.PushMessageReceiver;
 
 import java.util.List;
+
+import android.content.Intent;
 import android.util.Log;
 
 /**
@@ -14,11 +16,18 @@ import android.util.Log;
 public class PushReveiver extends PushMessageReceiver {
 
     private static final String TAG = "PushReceiver";
+    public static final String USER_ID_INTENT = "com.hachthon.amberalertcn.UserIdIntent";
+    public static final String EXTRA_USER_ID = "UserId";
+    public static final String EXTRA_CHANNEL_ID = "ChannelId";
 
     @Override
     public void onBind(Context context, int errorCode, String appid,
                        String userId, String channelId, String requestId) {
         Log.i(TAG, "onbind " + errorCode + " " + userId + " " + channelId);
+        Intent intent = new Intent(USER_ID_INTENT);
+        intent.putExtra(EXTRA_USER_ID, userId);
+        intent.putExtra(EXTRA_CHANNEL_ID, channelId);
+        context.sendBroadcast(intent);
     }
 
     @Override

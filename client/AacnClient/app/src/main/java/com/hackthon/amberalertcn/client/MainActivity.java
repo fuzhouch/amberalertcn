@@ -1,7 +1,10 @@
 package com.hackthon.amberalertcn.client;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -39,6 +42,8 @@ public class MainActivity extends ActionBarActivity {
                 startActivityForResult(intent, 100);
             }
         });
+
+        registerReceiver(m_userIdReceiver, new IntentFilter(PushReveiver.USER_ID_INTENT));
 
         //start to get Location.
         mLocationClient = new LocationClient(this.getApplicationContext());
@@ -81,16 +86,32 @@ public class MainActivity extends ActionBarActivity {
                     m_isLogin = true;
                     accessToken = data.getStringExtra(LoginActivity.ACCESS_TOKEN);
                     Log.i(TAG, "The access token is " + accessToken);
-                    sendRequestToServer(accessToken);
+                    PushManager.startWork(this, PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
                 }
                 break;
         }
     }
 
-    // TODO: just prototype
-    private void sendRequestToServer(String accessToken) {
-        PushManager.startWork(this, PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
+    private void sendRequestToServer(String userId, String channelId) {
+        // TODO: send to baidu
     }
+
+    private String m_userId;
+    private String m_channelId;
+
+    private BroadcastReceiver m_userIdReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action == PushReveiver.USER_ID_INTENT)
+            {
+                m_userId = intent.getStringExtra(PushReveiver.EXTRA_USER_ID);
+                m_channelId = intent.getStringExtra(PushReveiver.EXTRA_CHANNEL_ID);
+                Log.i(TAG, "UserId=" + m_userId + ", ChannelId = " + m_channelId);
+                sendRequestToServer(m_userId, m_channelId);
+            }
+        }
+    };
 
     /**
      * 实现实时位置回调监听
