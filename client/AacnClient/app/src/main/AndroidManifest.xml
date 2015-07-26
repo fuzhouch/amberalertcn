@@ -35,9 +35,8 @@
             android:label="@string/title_activity_login" >
         </activity>
 
-
         <!-- push应用定义消息receiver声明 -->
-        <receiver android:name="com.hackthon.amberalertcn.client.PushReveiver" >
+        <receiver android:name=".PushReveiver" >
             <intent-filter>
 
                 <!-- 接收push消息 -->
@@ -91,8 +90,11 @@
             android:exported="true" />
         <!-- push结束 -->
 
+
         <!-- 在百度开发者中心查询应用的API Key -->
-        <meta-data android:name="api_key" android:value="TfBK6mlV3UybD2CgirQVd8O2" />
+        <meta-data
+            android:name="api_key"
+            android:value="TfBK6mlV3UybD2CgirQVd8O2" />
 
         <service
             android:name="com.baidu.location.f"
@@ -108,6 +110,15 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="TfBK6mlV3UybD2CgirQVd8O2" />
+
+        <activity
+            android:name=".LostListActivity"
+            android:label="@string/title_activity_lost_list" >
+        </activity>
+        <activity
+            android:name=".LostDetailActivity"
+            android:label="@string/title_activity_lost_detail" >
+        </activity>
     </application>
 
 </manifest>

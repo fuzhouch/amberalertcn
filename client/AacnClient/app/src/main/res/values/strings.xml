@@ -4,4 +4,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Settings</string>
+    <string name="title_activity_lost_list">LostListActivity</string>
+    <string name="title_activity_lost_detail">LostDetailActivity</string>
 </resources>
