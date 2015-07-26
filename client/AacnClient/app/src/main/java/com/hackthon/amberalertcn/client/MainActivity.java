@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 // Perform action on click
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 100);
             }
         });
     }
@@ -49,5 +49,22 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (resultCode)
+        {
+            case 100:
+                m_isLogin = true;
+                break;
+        }
+    }
+
+    // TODO: just prototype
+    private void sendRequestToServer(String contactInfo)
+    {
     }
 }
