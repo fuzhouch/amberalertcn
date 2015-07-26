@@ -97,13 +97,6 @@ public class LoginActivity extends Activity {
                             "get access token success", Toast.LENGTH_SHORT)
                             .show();
 
-                    // ?��¼
-                    /*
-                    Intent intent = new Intent(Utils.ACTION_LOGIN);
-                    intent.setClass(LoginActivity.this, PushDemoActivity.class);
-                    intent.putExtra(Utils.EXTRA_ACCESS_TOKEN, accessToken);
-                    startActivity(intent);*/
-
                     Intent result = new Intent();
                     result.putExtra(ACCESS_TOKEN, accessToken);
                     setResult(Activity.RESULT_OK, result);

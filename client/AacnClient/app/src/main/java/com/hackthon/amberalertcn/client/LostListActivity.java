@@ -2,6 +2,7 @@ package com.hackthon.amberalertcn.client;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -21,6 +22,9 @@ public class LostListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lost_list);
+
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         lostList = new ArrayList<>();
         for (int i=0;i<10;i++)
@@ -75,4 +79,11 @@ public class LostListActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

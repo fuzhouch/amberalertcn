@@ -115,6 +115,10 @@
             android:name=".LostListActivity"
             android:label="@string/title_activity_lost_list" >
         </activity>
+        <activity
+            android:name=".LostDetailActivity"
+            android:label="@string/title_activity_lost_detail" >
+        </activity>
     </application>
 
 </manifest>
