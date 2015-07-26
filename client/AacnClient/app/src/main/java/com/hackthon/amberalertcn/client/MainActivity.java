@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
+
 public class MainActivity extends ActionBarActivity {
 
     private boolean m_isLogin = false;
@@ -66,12 +69,14 @@ public class MainActivity extends ActionBarActivity {
                     m_isLogin = true;
                     accessToken = data.getStringExtra(LoginActivity.ACCESS_TOKEN);
                     Log.i(TAG, "The access token is " + accessToken);
+                    sendRequestToServer(accessToken);
                 }
                 break;
         }
     }
 
     // TODO: just prototype
-    private void sendRequestToServer(String contactInfo) {
+    private void sendRequestToServer(String accessToken) {
+        PushManager.startWork(this, PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
     }
 }

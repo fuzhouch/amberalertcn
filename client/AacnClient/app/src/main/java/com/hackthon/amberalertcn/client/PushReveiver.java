@@ -5,6 +5,7 @@ import android.content.Context;
 import com.baidu.android.pushservice.PushMessageReceiver;
 
 import java.util.List;
+import android.util.Log;
 
 /**
  * Created by icyfox-bupt on 7/26/2015.
@@ -12,10 +13,12 @@ import java.util.List;
 
 public class PushReveiver extends PushMessageReceiver {
 
+    private static final String TAG = "PushReceiver";
+
     @Override
     public void onBind(Context context, int errorCode, String appid,
                        String userId, String channelId, String requestId) {
-        System.out.println("onbind\n" + errorCode + " " + userId + " " + channelId);
+        Log.i(TAG, "onbind " + errorCode + " " + userId + " " + channelId);
     }
 
     @Override
