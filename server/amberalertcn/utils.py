@@ -4,6 +4,8 @@ import flask
 from amberalertcn import httplib
 import hashlib
 
+ACCEPTED_CONTENT_ENCODING = "utf-8"
+
 def generate_baidu_auth_uri(base_uri, params, baidu_ak, baidu_sk):
     """A helper function to generate URI with Baidu's SN"""
     safe = "/:=&?#+!$,;'@()*[]"
@@ -28,15 +30,15 @@ def make_json_response(data):
     This is a helper function when returning objects.
     """
     if data is None: # Data not found.
-        resp = flask.jsonify(status_code=ruuxee.httplib.BAD_REQUEST)
-        resp.status_code = ruuxee.httplib.BAD_REQUEST
+        resp = flask.jsonify(status_code=httplib.BAD_REQUEST)
+        resp.status_code = httplib.BAD_REQUEST
         resp.content_encoding = ACCEPTED_CONTENT_ENCODING
     elif "status_code" in data:
         resp = flask.jsonify(**data)
         resp.status_code = data["status_code"]
         resp.content_encoding = ACCEPTED_CONTENT_ENCODING
     else:
-        resp = flask.jsonify(status_code=ruuxee.httplib.OK, **data)
+        resp = flask.jsonify(status_code=httplib.OK, **data)
         resp.content_encoding = ACCEPTED_CONTENT_ENCODING
     return resp
 

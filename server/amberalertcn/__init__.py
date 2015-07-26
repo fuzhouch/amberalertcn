@@ -48,7 +48,8 @@ class Application(flask.Flask):
     def app_name(self):
         return self.__app_name
 
-    def current_core(self):
+    @staticmethod
+    def current_core():
         return flask.current_app.config["AACN_CORE"]
 
 class View(flask.Blueprint):
