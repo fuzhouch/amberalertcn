@@ -5,13 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.ActionBarActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
@@ -19,37 +21,83 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends ActionBarActivity {
+import java.io.UnsupportedEncodingException;
+
+public class MainActivity extends AppCompatActivity {
 
     private boolean m_isLogin = false;
     private Button m_btnLogin;
+    private Button m_btnSend;
     private String accessToken;
 
     private static final String TAG = "MainActivity";
     private LocationClient mLocationClient;
     private MyLocationListener mMyLocationListener;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sp = getSharedPreferences("cache", Context.MODE_PRIVATE);
+
         m_btnLogin = (Button) findViewById(R.id.btnLogin);
         m_btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(intent, 100);
+                if (sp.getBoolean("login", false)){
+
+                }else{
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivityForResult(intent, 100);
+                }
             }
         });
+
+        m_btnSend = (Button) findViewById(R.id.btn_send);
+        m_btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               AsyncHttpClient client = new AsyncHttpClient();
+               String url = "http://atn1.dummydigit.net:8080/api/v1/sendmessage?&user_id=%s&channel_id=%s&amber_alert_id=%d";
+               url = String.format(url, "570776788", "4070690458111110981", 1);
+               RequestParams rp = new RequestParams();
+                StringEntity se = null;
+                try {
+                    se = new StringEntity("{ \"message\":\"熊孩子再次跑潘家园去了\"}", "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                client.addHeader("Content-Type", "application/json");
+               client.post(getApplicationContext(), url, se, "application/json", new JsonHttpResponseHandler(){
+
+                   @Override
+                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                       super.onSuccess(statusCode, headers, response);
+                       try {
+                           Log.i(TAG, response.toString(2));
+                       } catch (JSONException e) {
+                           e.printStackTrace();
+                       }
+                   }
+               });
+
+            }
+        });
+
+        if (sp.getBoolean("login", false)){
+            m_btnLogin.setText("Help");
+        }
 
         registerReceiver(m_userIdReceiver, new IntentFilter(PushReveiver.USER_ID_INTENT));
 
@@ -76,8 +124,13 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, LoginActivity.class));
+        if (id == R.id.action_list) {
+            startActivity(new Intent(this, LostListActivity.class));
+            return true;
+        }
+
+        if (id == R.id.action_detail){
+            startActivity(new Intent(this, LostDetailActivity.class));
             return true;
         }
 
@@ -103,16 +156,15 @@ public class MainActivity extends ActionBarActivity {
     private static final String HTTP_RESPONSE_AMBER_USER_ID = "amber_user_id";
     private static final String HTTP_RESPONSE_AMBER_DEVICE_ID = "amber_device_id";
 
-    public class BaiduPushHandler extends JsonHttpResponseHandler {
+    public class PublishAlertHandler extends JsonHttpResponseHandler {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             super.onSuccess(statusCode, headers, response);
 
             try {
                 int status = response.getInt("status_code");
-                String amberUserId = response.getString(HTTP_RESPONSE_AMBER_USER_ID);
-                String amberDeviceId = response.getString(HTTP_RESPONSE_AMBER_DEVICE_ID);
-                Log.i(TAG, "status=" + statusCode + ", userId=" + amberUserId + ", amberDevId=" + amberDeviceId);
+                int count = response.optInt("alerted_count");
+                Toast.makeText(getApplicationContext(), "发送成功,"+ count +"人收到通知", Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 Log.e(TAG, "Exception", e);
             }
@@ -140,11 +192,11 @@ public class MainActivity extends ActionBarActivity {
     private void sendRequestToServer(String userId, String channelId) {
         // TODO: send to baidu
 
-        String url = "http://10.172.120.69:5001/api/v1/updatelocation?&user_id=%s&channel_id=%s&longitude=%f&latitude=%f";
+        String url = "http://atn1.dummydigit.net:8080/api/v1/publishalert?&user_id=%s&channel_id=%s&longitude=%f&latitude=%f";
         String formattedUrl = String.format(url, m_userId, m_channelId, m_longtitude, m_latitude);
         Log.i(TAG, "sendRequestToServer: " + formattedUrl);
         AsyncHttpClient httpClient = new AsyncHttpClient();
-        httpClient.post(formattedUrl, null, new BaiduPushHandler());
+        httpClient.post(formattedUrl, null, new PublishAlertHandler());
     }
 
     private String m_userId;

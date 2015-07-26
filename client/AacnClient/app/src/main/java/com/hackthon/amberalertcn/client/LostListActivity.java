@@ -1,7 +1,7 @@
 package com.hackthon.amberalertcn.client;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LostListActivity extends ActionBarActivity {
+public class LostListActivity extends AppCompatActivity {
 
     private ListView lv;
     private List<LostBean> lostList;
@@ -23,8 +23,8 @@ public class LostListActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lost_list);
 
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         lostList = new ArrayList<>();
         for (int i=0;i<10;i++)
@@ -57,11 +57,12 @@ public class LostListActivity extends ActionBarActivity {
             ViewHolder vh;
             if (convertView == null){
                 convertView = getLayoutInflater().inflate(R.layout.item_lost, null);
-                vh = (ViewHolder) convertView.getTag();
+                vh = new ViewHolder();
                 vh.tvUser = (TextView) convertView.findViewById(R.id.tv_user);
                 vh.tvDesc = (TextView) convertView.findViewById(R.id.tv_desc);
                 vh.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
                 vh.tvPosition = (TextView) convertView.findViewById(R.id.tv_position);
+                convertView.setTag(vh);
             }else{
                 vh = (ViewHolder) convertView.getTag();
             }
