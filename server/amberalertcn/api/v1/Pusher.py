@@ -33,7 +33,7 @@ class Pusher(object):
 		optional = dict()
 		optional[Channel.USER_ID] = user[0]
 		optional[Channel.CHANNEL_ID] = user[1]
-		optional[Channel.MESSAGE_TYPE] = 1
+		optional[Channel.MESSAGE_TYPE] = 0
 		alertMessage = "{'title':'%s', 'description':'%s', 'custom_content': { 'amber_alert_id':'%s', 'from_user_id':'%s' }}" % (message[0], message[1], message[2], message[3])
 		#jsonMessage = json.dumps(updateMessage)
 		ret = channel.pushMessage(push_type, alertMessage, message_key, optional)
