@@ -30,4 +30,5 @@ dependencies {
     compile files('libs/pushservice-4.5.1.8.jar')
     compile files('libs/BaiduLBS_Android.jar')
     compile 'com.android.support:cardview-v7:22.2.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

@@ -8,11 +8,15 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.android.pushservice.PushConstants;
@@ -20,9 +24,11 @@ import com.baidu.android.pushservice.PushManager;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.apache.http.entity.StringEntity;
@@ -35,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 public class MainActivity extends AppCompatActivity {
 
     private boolean m_isLogin = false;
+
     private Button m_btnLogin;
     private Button m_btnSend;
     private String accessToken;
@@ -44,19 +51,38 @@ public class MainActivity extends AppCompatActivity {
     private MyLocationListener mMyLocationListener;
     SharedPreferences sp;
 
+    private static final String HTTP_RESPONSE_AMBER_USER_ID = "amber_user_id";
+    private static final String HTTP_RESPONSE_AMBER_DEVICE_ID = "amber_device_id";
+
+    private String m_userId;
+    private String m_channelId;
+    private double m_latitude;
+    private double m_longtitude;
+    private ImageView ivFace, ivLoc;
+    private TextView tvId, tvLoc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sp = getSharedPreferences("cache", Context.MODE_PRIVATE);
+        sp = getSharedPreferences("aacn_cache", Context.MODE_PRIVATE);
+        accessToken = sp.getString("token", "");
+        m_isLogin = sp.getBoolean("login", false);
+        m_channelId = sp.getString("channelid", "");
+        m_userId = sp.getString("userid", "");
+
+        ivFace = (ImageView) findViewById(R.id.iv_face);
+        tvId = (TextView) findViewById(R.id.tv_id);
+        ivLoc = (ImageView) findViewById(R.id.iv_loc);
+        tvLoc = (TextView) findViewById(R.id.tv_loc);
 
         m_btnLogin = (Button) findViewById(R.id.btnLogin);
         m_btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                if (sp.getBoolean("login", false)){
-
+                if (m_isLogin){
+                    sendRequestToServer(m_userId, m_channelId);
                 }else{
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivityForResult(intent, 100);
@@ -69,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                AsyncHttpClient client = new AsyncHttpClient();
-               String url = "http://atn1.dummydigit.net:8080/api/v1/sendmessage?&user_id=%s&channel_id=%s&amber_alert_id=%d";
-               url = String.format(url, "570776788", "4070690458111110981", 1);
+               String url = HttpConstant.SENDMESSAGE;
+               url = String.format(url, m_userId, m_channelId, 1);
                RequestParams rp = new RequestParams();
                 StringEntity se = null;
                 try {
@@ -78,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                client.addHeader("Content-Type", "application/json");
+                Log.i(TAG, url);
                client.post(getApplicationContext(), url, se, "application/json", new JsonHttpResponseHandler(){
 
                    @Override
@@ -90,13 +116,20 @@ public class MainActivity extends AppCompatActivity {
                            e.printStackTrace();
                        }
                    }
+
+                   @Override
+                   public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                       super.onFailure(statusCode, headers, responseString, throwable);
+                       Log.i(TAG, statusCode +  " " + headers);
+                   }
                });
 
             }
         });
 
-        if (sp.getBoolean("login", false)){
-            m_btnLogin.setText("Help");
+        if (m_isLogin){
+            m_btnLogin.setText(getResources().getString(R.string.help));
+            showInfo();
         }
 
         registerReceiver(m_userIdReceiver, new IntentFilter(PushReveiver.USER_ID_INTENT));
@@ -105,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
+
+        LocationClientOption option = new LocationClientOption();
+        option.setIsNeedAddress(true);
+        mLocationClient.setLocOption(option);
 
         mLocationClient.start();
     }
@@ -146,15 +183,14 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     m_isLogin = true;
                     accessToken = data.getStringExtra(LoginActivity.ACCESS_TOKEN);
+                    sp.edit().putBoolean("login", true).apply();
+                    sp.edit().putString("token", accessToken).apply();
                     Log.i(TAG, "The access token is " + accessToken);
                     PushManager.startWork(this, PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
                 }
                 break;
         }
     }
-
-    private static final String HTTP_RESPONSE_AMBER_USER_ID = "amber_user_id";
-    private static final String HTTP_RESPONSE_AMBER_DEVICE_ID = "amber_device_id";
 
     public class PublishAlertHandler extends JsonHttpResponseHandler {
         @Override
@@ -192,18 +228,12 @@ public class MainActivity extends AppCompatActivity {
     private void sendRequestToServer(String userId, String channelId) {
         // TODO: send to baidu
 
-        String url = "http://atn1.dummydigit.net:8080/api/v1/publishalert?&user_id=%s&channel_id=%s&longitude=%f&latitude=%f";
+        String url = HttpConstant.PUBLISHALERT;
         String formattedUrl = String.format(url, m_userId, m_channelId, m_longtitude, m_latitude);
         Log.i(TAG, "sendRequestToServer: " + formattedUrl);
         AsyncHttpClient httpClient = new AsyncHttpClient();
-        httpClient.post(formattedUrl, null, new PublishAlertHandler());
+        httpClient.post(this, formattedUrl, null, "application/json", new PublishAlertHandler());
     }
-
-    private String m_userId;
-    private String m_channelId;
-    private double m_latitude;
-    private double m_longtitude;
-
 
     private BroadcastReceiver m_userIdReceiver = new BroadcastReceiver() {
         @Override
@@ -212,6 +242,11 @@ public class MainActivity extends AppCompatActivity {
             if (action == PushReveiver.USER_ID_INTENT) {
                 m_userId = intent.getStringExtra(PushReveiver.EXTRA_USER_ID);
                 m_channelId = intent.getStringExtra(PushReveiver.EXTRA_CHANNEL_ID);
+
+                sp.edit().putString("userid", m_userId);
+                sp.edit().putString("channelid", m_channelId);
+                sp.edit().commit();
+
                 Log.i(TAG, "UserId=" + m_userId + ", ChannelId = " + m_channelId);
                 sendRequestToServer(m_userId, m_channelId);
             }
@@ -278,6 +313,37 @@ public class MainActivity extends AppCompatActivity {
             sb.append(location.getCity());
             System.out.printf(sb.toString());
             Log.i("BaiduLocationApiDem", sb.toString());
+
+            if (!TextUtils.isEmpty(location.getAddrStr())) {
+                tvLoc.setText(location.getAddrStr());
+                ivLoc.setImageResource(R.mipmap.loc_icon_press);
+            }
+
         }
     }
+
+    private void showInfo(){
+        AsyncHttpClient sslClient = new AsyncHttpClient(true, 80, 443);
+        sslClient.get(HttpConstant.BAIDUINFO + accessToken, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                String uname = response.optString("uname");
+                String face_id = response.optString("portrait");
+
+                Picasso.with(getApplicationContext()).load(HttpConstant.BAIDUFACE + face_id)
+                        .into(ivFace);
+                tvId.setText(uname);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Toast.makeText(getApplicationContext(), "Fetch info failed.", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
 }

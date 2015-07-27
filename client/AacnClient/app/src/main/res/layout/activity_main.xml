@@ -13,18 +13,74 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <Button
+        <LinearLayout
+            android:id="@+id/userinfo"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|left"
+            android:padding="10dp"
+            android:background="@color/white">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/iv_face"
+                android:src="@mipmap/iv_face"
+                android:layout_margin="10dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Not Login"
+                android:id="@+id/tv_id" />
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/locinfo"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|left"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="10dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/iv_loc"
+            android:src="@mipmap/loc_icon"
+            android:layout_margin="10dp"
+            />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login"
+            android:text="No GPS info."
+            android:id="@+id/tv_loc" />
+        </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:layout_margin="20dp"
             android:id="@+id/btnLogin"
+            android:background="@drawable/btn_green"
+            android:textColor="@color/white"
             android:layout_gravity="center_horizontal" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send Message"
+            android:layout_margin="20dp"
+            android:background="@drawable/btn_green"
+            android:text="@string/send"
             android:id="@+id/btn_send"
+            android:textColor="@color/white"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
 </RelativeLayout>

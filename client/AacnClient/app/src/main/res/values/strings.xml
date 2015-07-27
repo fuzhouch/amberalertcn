@@ -6,4 +6,9 @@
     <string name="title_activity_login">Settings</string>
     <string name="title_activity_lost_list">LostListActivity</string>
     <string name="title_activity_lost_detail">LostDetailActivity</string>
+    <string name="list">List</string>
+    <string name="detail">Detail</string>
+    <string name="login">Login</string>
+    <string name="send">Send Message</string>
+    <string name="help">Help</string>
 </resources>
