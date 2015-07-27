@@ -55,7 +55,7 @@ def send_message():
         print(e)
         return utils.make_json_response(None)
 
-@api.route('/alerts', method=['GET'])
+@api.route('/alerts', methods=['GET'])
 def get_all_alerts():
     try:
         core = amberalertcn.Application.current_core()
@@ -65,7 +65,7 @@ def get_all_alerts():
         print(e)
         return utils.make_json_response(None)
 
-@api.route('/alert/<int:alert_id>', method=['GET'])
+@api.route('/alert/<int:alert_id>', methods=['GET'])
 def get_alert(alert_id):
     try:
         core = amberalertcn.Application.current_core()
@@ -75,7 +75,7 @@ def get_alert(alert_id):
         print(e)
         return utils.make_json_response(None)
 
-@api.route('/myfollowingalerts', method=['GET'])
+@api.route('/myfollowingalerts', methods=['GET'])
 def get_my_following_alerts():
     try:
         core = amberalertcn.Application.current_core()
