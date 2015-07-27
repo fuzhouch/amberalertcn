@@ -1,2 +1,2 @@
-server/amberalertcn/api/v1/secret.ini
 *.pyc
+*.ini

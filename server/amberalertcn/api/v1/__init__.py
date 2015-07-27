@@ -54,3 +54,34 @@ def send_message():
     except Exception as e:
         print(e)
         return utils.make_json_response(None)
+
+@api.route('/alerts', method=['GET'])
+def get_all_alerts():
+    try:
+        core = amberalertcn.Application.current_core()
+        resp = core.get_all_alerts()
+        return utils.make_json_response(resp)
+    except Exception as e:
+        print(e)
+        return utils.make_json_response(None)
+
+@api.route('/alert/<int:alert_id>', method=['GET'])
+def get_alert(alert_id):
+    try:
+        core = amberalertcn.Application.current_core()
+        resp = core.get_alert_details(alert_id)
+        return utils.make_json_response(resp)
+    except Exception as e:
+        print(e)
+        return utils.make_json_response(None)
+
+@api.route('/myfollowingalerts', method=['GET'])
+def get_my_following_alerts():
+    try:
+        core = amberalertcn.Application.current_core()
+        user_id = int(flask.request.args.get('user_id'))
+        resp = core.get_my_following_alerts(user_id)
+        return utils.make_json_response(resp)
+    except Exception as e:
+        print(e)
+        return utils.make_json_response(None)

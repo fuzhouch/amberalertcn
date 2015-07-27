@@ -147,5 +147,30 @@ class FakeDBAccess(object):
         message_info.append(ts)
         self.__amber_alert_chatroom[amber_alert_id].append(message_info)
 
+    def query_alert_by_id(self, amber_alert_id):
+        return self.__amber_alert_chatroom[amber_alert_id]
+
+    def query_alerts_by_ids(self, amber_alert_ids):
+        amber_alerts = {}
+        for alert_id in amber_alert_ids:
+            amber_alerts[alert_id] = query_alert_by_id(amber_alert_id)
+        return amber_alerts
+
+    def query_all_alerts(self):
+        return self.__amber_alert_chatroom
+
+    def query_following_alert_ids(self, amber_user_id):
+        amber_user_following_alert_ids = []
+        for (key, item) in self.__amber_alert_follow_list:
+            if amber_user_id in item:
+                amber_user_following_alert_ids.append(key)
+        return amber_user_following_alert_ids
+
+    def query_following_alerts(self, amber_user_id):
+        amber_user_following_alert_ids = query_following_alert_ids(amber_user_id)
+        return query_alerts_by_ids(amber_user_following_alert_ids)
+
+
+
 AACN_SECRET = secret.Secret() # Find secret.ini from current folder.
 AACN_CORE = amberalertcn.core.Core(FakeDBAccess(), None)

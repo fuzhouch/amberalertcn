@@ -106,3 +106,16 @@ class Core(object):
         dbaccess.add_message_to_chatroom(amber_alert_id, message_info)
 
         return { "status_code": utils.httplib.OK }
+
+    def get_alert_details(self, alert_id):
+        dbaccess = self.__dbaccess
+        return dbaccess.query_alert_by_id(alert_id)
+
+    def get_all_alerts(self):
+        dbaccess = self.__dbaccess
+        return dbaccess.query_all_alerts()
+
+    def get_my_following_alerts(self, user_id):
+        dbaccess = self.__dbaccess
+        return dbaccess.query_following_alerts(user_id)
+
