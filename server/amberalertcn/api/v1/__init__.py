@@ -28,12 +28,14 @@ def publish_alert():
     try:
         user_id = flask.request.args.get('user_id')
         channel_id = flask.request.args.get('channel_id')
+        user_name = int(flask.request.args.get('user_name'))
+        user_face = int(flask.request.args.get('user_face'))
         longitude = float(flask.request.args.get('longitude'))
         latitude = float(flask.request.args.get('latitude'))
         child_id = 0 # no use
         core = amberalertcn.Application.current_core()
         resp = core.publish_alert(user_id, channel_id, child_id, \
-                longitude, latitude)
+                user_name, user_face, longitude, latitude)
         return utils.make_json_response(resp)
     except Exception as e:
         print(e)
@@ -60,7 +62,7 @@ def get_all_alerts():
     try:
         core = amberalertcn.Application.current_core()
         resp = core.get_all_alerts()
-        return utils.make_json_alert_response(resp)
+        return utils.make_json_alerts_response(resp)
     except Exception as e:
         print(e)
         return utils.make_json_response(None)
@@ -70,6 +72,7 @@ def get_alert(alert_id):
     try:
         core = amberalertcn.Application.current_core()
         resp = core.get_alert_details(alert_id)
+        print(resp)
         return utils.make_json_alert_response(resp)
     except Exception as e:
         print(e)
@@ -81,7 +84,19 @@ def get_my_following_alerts():
         core = amberalertcn.Application.current_core()
         user_id = int(flask.request.args.get('user_id'))
         resp = core.get_my_following_alerts(user_id)
-        return utils.make_json_alert_response(resp)
+        return utils.make_json_alerts_response(resp)
+    except Exception as e:
+        print(e)
+        return utils.make_json_response(None)
+
+@api.route('/myalerts', methods=['GET'])
+def get_my_amber_alerts():
+    try:
+        core = amberalertcn.Application.current_core()
+        user_id = int(flask.request.args.get('user_id'))
+        channel_id = int(flask.request.args.get('channel_id'))
+        resp = core.get_my_alerts(user_id, channel_id)
+        return utils.make_json_alerts_response(resp)
     except Exception as e:
         print(e)
         return utils.make_json_response(None)

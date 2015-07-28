@@ -18,7 +18,6 @@ class FakeDBAccess(object):
         self.__amber_user_to_device = {}
         self.__baidu_to_amber_user = {}
         self.__amber_device_to_location = {}
-        self.__alert_info = {}
         self.__amber_alert_chatroom = {}
         self.__amber_alert_follow_list = {}
 
@@ -171,6 +170,14 @@ class FakeDBAccess(object):
         amber_user_following_alert_ids = self.query_following_alert_ids(amber_user_id)
         print(amber_user_following_alert_ids)
         return self.query_alerts_by_ids(amber_user_following_alert_ids)
+
+    def query_user_alerts(self, amber_user_id):
+        amber_alert_ids = []
+        for (key, item) in self.__amber_alert_chatroom.items():
+            if item[0][3] == amber_user_id:
+                amber_alert_ids.append(key)
+        return self.query_alerts_by_ids(amber_alert_ids)
+
 
 
 

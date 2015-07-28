@@ -39,7 +39,7 @@ class Core(object):
         return resp
 
     def publish_alert(self, user_id, channel_id, \
-            child_id, longitude, latitude):
+            child_id, user_name, user_face, longitude, latitude):
         dbaccess = self.__dbaccess
         amber_from_user_id = dbaccess.query_user_id_from_baidu(\
                 user_id, channel_id)
@@ -63,7 +63,9 @@ class Core(object):
                 "警告：有孩子走失！", # title
                 "三岁，有点胖，大红帽子绿上衣，包包头", # description
                 amber_alert_id, # amber_alert_id
-                amber_from_user_id # from_user_id
+                amber_from_user_id, # from_user_id
+                user_name,
+                user_face
                 ]
         print("Send")
         p = pusher.Pusher(flask.current_app.config["AACN_SECRET"])
@@ -119,4 +121,10 @@ class Core(object):
     def get_my_following_alerts(self, user_id):
         dbaccess = self.__dbaccess
         return dbaccess.query_following_alerts(user_id)
+
+    def get_my_alerts(self, user_id, channel_id):
+        dbaccess = self.__dbaccess
+        amber_from_user_id = dbaccess.query_user_id_from_baidu(user_id, channel_id)
+        assert amber_from_user_id is not None
+        return dbaccess.query_user_alerts(amber_from_user_id)
 
