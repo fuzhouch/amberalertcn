@@ -28,8 +28,8 @@ def publish_alert():
     try:
         user_id = flask.request.args.get('user_id')
         channel_id = flask.request.args.get('channel_id')
-        user_name = int(flask.request.args.get('user_name'))
-        user_face = int(flask.request.args.get('user_face'))
+        user_name = flask.request.args.get('user_name')
+        user_face = flask.request.args.get('user_face')
         longitude = float(flask.request.args.get('longitude'))
         latitude = float(flask.request.args.get('latitude'))
         child_id = 0 # no use
