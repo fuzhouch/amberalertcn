@@ -60,7 +60,7 @@ def get_all_alerts():
     try:
         core = amberalertcn.Application.current_core()
         resp = core.get_all_alerts()
-        return utils.make_json_response(resp)
+        return utils.make_json_alert_response(resp)
     except Exception as e:
         print(e)
         return utils.make_json_response(None)
@@ -70,7 +70,7 @@ def get_alert(alert_id):
     try:
         core = amberalertcn.Application.current_core()
         resp = core.get_alert_details(alert_id)
-        return utils.make_json_response(resp)
+        return utils.make_json_alert_response(resp)
     except Exception as e:
         print(e)
         return utils.make_json_response(None)
@@ -81,7 +81,7 @@ def get_my_following_alerts():
         core = amberalertcn.Application.current_core()
         user_id = int(flask.request.args.get('user_id'))
         resp = core.get_my_following_alerts(user_id)
-        return utils.make_json_response(resp)
+        return utils.make_json_alert_response(resp)
     except Exception as e:
         print(e)
         return utils.make_json_response(None)

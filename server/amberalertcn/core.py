@@ -68,6 +68,7 @@ class Core(object):
         print("Send")
         p = pusher.Pusher(flask.current_app.config["AACN_SECRET"])
         result_json = p.pushAlert_to_users(matched_device_list, message)
+        dbaccess.add_message_to_chatroom(amber_alert_id, message)
         print("Done")
         # TBD result_json will be handled later.
 

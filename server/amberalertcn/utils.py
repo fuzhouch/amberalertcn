@@ -44,6 +44,24 @@ def make_json_response(data):
         resp.content_encoding = ACCEPTED_CONTENT_ENCODING
     return resp
 
+def make_json_alert_response(data):
+    """def make_json_response(data) -> flask.Response(json_blob)
+
+    This is a helper function when returning objects.
+    """
+    if data is None: # Data not found.
+        resp = flask.jsonify(status_code=httplib.BAD_REQUEST)
+        resp.status_code = httplib.BAD_REQUEST
+        resp.content_encoding = ACCEPTED_CONTENT_ENCODING
+    elif "status_code" in data:
+        resp = flask.jsonify(**data)
+        resp.status_code = data["status_code"]
+        resp.content_encoding = ACCEPTED_CONTENT_ENCODING
+    else:
+        resp = flask.jsonify(status_code=httplib.OK, alerts=data)
+        resp.content_encoding = ACCEPTED_CONTENT_ENCODING
+    return resp
+
 def get_millisecond_unix_epoch():
     now = datetime.datetime.utcnow()
     return calendar.timegm(now.utctimetuple())

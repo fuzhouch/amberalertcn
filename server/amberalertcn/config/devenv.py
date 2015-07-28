@@ -153,7 +153,7 @@ class FakeDBAccess(object):
     def query_alerts_by_ids(self, amber_alert_ids):
         amber_alerts = {}
         for alert_id in amber_alert_ids:
-            amber_alerts[alert_id] = query_alert_by_id(amber_alert_id)
+            amber_alerts[alert_id] = self.query_alert_by_id(amber_alert_id)
         return amber_alerts
 
     def query_all_alerts(self):
@@ -161,14 +161,16 @@ class FakeDBAccess(object):
 
     def query_following_alert_ids(self, amber_user_id):
         amber_user_following_alert_ids = []
-        for (key, item) in self.__amber_alert_follow_list:
+        print(self.__amber_alert_follow_list)
+        for (key, item) in self.__amber_alert_follow_list.items():
             if amber_user_id in item:
                 amber_user_following_alert_ids.append(key)
         return amber_user_following_alert_ids
 
     def query_following_alerts(self, amber_user_id):
-        amber_user_following_alert_ids = query_following_alert_ids(amber_user_id)
-        return query_alerts_by_ids(amber_user_following_alert_ids)
+        amber_user_following_alert_ids = self.query_following_alert_ids(amber_user_id)
+        print(amber_user_following_alert_ids)
+        return self.query_alerts_by_ids(amber_user_following_alert_ids)
 
 
 
