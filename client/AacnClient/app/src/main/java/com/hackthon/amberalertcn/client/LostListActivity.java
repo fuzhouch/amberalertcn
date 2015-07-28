@@ -1,17 +1,21 @@
 package com.hackthon.amberalertcn.client;
 
+import android.content.SyncStatusObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -35,12 +39,12 @@ public class LostListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         lostList = new ArrayList<>();
-        for (int i=0;i<10;i++)
-            lostList.add(new LostBean());
 
         lv = (ListView) findViewById(R.id.list);
         adapter = new LostAdapter();
         lv.setAdapter(adapter);
+
+        getAlerts();
     }
 
     private void getAlerts(){
@@ -54,13 +58,23 @@ public class LostListActivity extends AppCompatActivity {
                 JSONArray arr = response.optJSONArray("alerts");
                 for (int i = 0; i < arr.length();i++) {
                     LostBean lb = new LostBean();
+
                     JSONArray replys = arr.optJSONArray(i);
                     lb.count = replys.length() - 1;
                     JSONArray main = replys.optJSONArray(0);
                     lb.title = main.optString(0);
+                    lb.description = main.optString(1);
+                    lb.alert_id = main.optString(2);
+                    lb.from_user_id = main.optString(3);
+                    lb.uname = main.optString(4);
+                    lb.uface = main.optString(5);
+                    lb.time = main.optLong(6);
+                    Log.i("lost", lb.toString());
 
+                    lostList.add(lb);
                 }
 
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -95,25 +109,31 @@ public class LostListActivity extends AppCompatActivity {
             if (convertView == null){
                 convertView = getLayoutInflater().inflate(R.layout.item_lost, null);
                 vh = new ViewHolder();
-                vh.tvUser = (TextView) convertView.findViewById(R.id.tv_user);
                 vh.tvDesc = (TextView) convertView.findViewById(R.id.tv_desc);
                 vh.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
                 vh.tvPosition = (TextView) convertView.findViewById(R.id.tv_position);
+                vh.ivFace = (ImageView) convertView.findViewById(R.id.iv_face);
+                vh.tvName = (TextView) convertView.findViewById(R.id.tv_name);
+                vh.tvTime = (TextView) convertView.findViewById(R.id.tv_time);
                 convertView.setTag(vh);
             }else{
                 vh = (ViewHolder) convertView.getTag();
             }
 
             LostBean bean = lostList.get(position);
-            vh.tvUser.setText(bean.from_user_id);
             vh.tvDesc.setText(bean.description);
             vh.tvPosition.setText(bean.position);
             vh.tvTitle.setText(bean.title);
+            vh.tvName.setText(bean.uname);
+            vh.tvTime.setText(HttpConstant.convertTime(bean.time));
+            Picasso.with(getApplicationContext()).load(HttpConstant.BAIDUFACE + bean.uface)
+                    .into(vh.ivFace);
             return convertView;
         }
 
         class ViewHolder{
-            TextView tvUser, tvDesc, tvPosition, tvTitle;
+            TextView tvDesc, tvPosition, tvTitle, tvName, tvTime;
+            ImageView ivFace;
         }
     }
 

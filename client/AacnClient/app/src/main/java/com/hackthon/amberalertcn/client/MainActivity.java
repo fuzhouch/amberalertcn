@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -233,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: send to baidu
 
         String url = HttpConstant.PUBLISHALERT;
-        String formattedUrl = String.format(url, m_userId, m_channelId, m_longtitude, m_latitude);
+        String formattedUrl = String.format(url, m_userId, m_channelId, m_longtitude, m_latitude, Uri.encode(uname), face_id);
         Log.i(TAG, "sendRequestToServer: " + formattedUrl);
         AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.post(this, formattedUrl, null, "application/json", new PublishAlertHandler());

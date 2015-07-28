@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="6dp">
+    android:padding="3dp">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -13,13 +13,43 @@
             android:id="@+id/inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|left">
+
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/iv_face"
+                    android:src="@mipmap/ic_launcher"
+                    android:layout_margin="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="username"
+                    android:id="@+id/tv_name" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="username"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:id="@+id/tv_time" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="This is titile."
+                android:textSize="16sp"
                 android:id="@+id/tv_title" />
 
             <TextView
@@ -28,19 +58,29 @@
                 android:text="This is description"
                 android:id="@+id/tv_desc" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="This is User"
-                android:id="@+id/tv_user" />
+                android:gravity="center|right"
+                >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is position."
-                android:id="@+id/tv_position" />
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@mipmap/loc_icon_press"
+                    android:id="@+id/imageView" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This is position."
+                    android:id="@+id/tv_position" />
+
+
+            </LinearLayout>
+
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
 
 </LinearLayout>
