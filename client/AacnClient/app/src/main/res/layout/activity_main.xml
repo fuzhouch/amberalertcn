@@ -78,8 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:background="@drawable/btn_green"
-            android:text="@string/send"
-            android:id="@+id/btn_send"
+            android:text="@string/list"
+            android:id="@+id/btn_list"
             android:textColor="@color/white"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>

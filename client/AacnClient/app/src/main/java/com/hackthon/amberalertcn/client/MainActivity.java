@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean m_isLogin = false;
 
     private Button m_btnLogin;
-    private Button m_btnSend;
+    private Button m_btnList;
     private String accessToken;
 
     private static final String TAG = "MainActivity";
@@ -93,11 +93,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        m_btnSend = (Button) findViewById(R.id.btn_send);
-        m_btnSend.setOnClickListener(new View.OnClickListener() {
+        m_btnList = (Button) findViewById(R.id.btn_list);
+        m_btnList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               AsyncHttpClient client = new AsyncHttpClient();
+               startActivity(new Intent(getApplicationContext(), LostListActivity.class));
+               /*AsyncHttpClient client = new AsyncHttpClient();
                String url = HttpConstant.SENDMESSAGE;
                url = String.format(url, m_userId, m_channelId, 1);
                RequestParams rp = new RequestParams();
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                        Log.i(TAG, statusCode +  " " + headers);
                    }
                });
-
+                */
             }
         });
 
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_list) {
-            startActivity(new Intent(this, LostListActivity.class));
+            startActivity(new Intent(this, MapActivity.class));
             return true;
         }
 

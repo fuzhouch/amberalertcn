@@ -109,7 +109,7 @@
         <!-- meta-data需要写在application中 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="TfBK6mlV3UybD2CgirQVd8O2" />
+            android:value="DQvRKbnwsfjX71gzbMyyFZRi" />
 
         <activity
             android:name=".LostListActivity"
@@ -118,6 +118,10 @@
         <activity
             android:name=".LostDetailActivity"
             android:label="@string/title_activity_lost_detail" >
+        </activity>
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map" >
         </activity>
     </application>
 

@@ -9,6 +9,7 @@ import android.view.View;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
+import com.baidu.mapapi.SDKInitializer;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class BaseApp extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
+        SDKInitializer.initialize(this);
     }
 
 }

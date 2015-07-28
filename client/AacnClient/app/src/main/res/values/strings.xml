@@ -11,4 +11,5 @@
     <string name="login">Login</string>
     <string name="send">Send Message</string>
     <string name="help">Help</string>
+    <string name="title_activity_map">Choose Location</string>
 </resources>
