@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by icyfox-bupt on 7/26/2015.
  */
@@ -64,8 +67,24 @@ public class PushReveiver extends PushMessageReceiver {
         resultIntent.putExtra("STRING", s);
         resultIntent.putExtra("STRING1", s1);
 
+        Log.i(TAG, s + " -");
+        Log.i(TAG, s1 + " ---");
+
+        String title = "", message = "";
+        try {
+            JSONObject obj = new JSONObject(s);
+            title = obj.optString("title");
+            message = obj.optString("description");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
+        builder.setContentTitle(title);
+        builder.setContentText(message);
+        builder.setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(1, builder.build());

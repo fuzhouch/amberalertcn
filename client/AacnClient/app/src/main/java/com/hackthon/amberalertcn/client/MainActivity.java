@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String m_userId;
     private String m_channelId;
+    private String uname, face_id;
+
     private double m_latitude;
     private double m_longtitude;
     private ImageView ivFace, ivLoc;
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         if (m_isLogin){
             m_btnLogin.setText(getResources().getString(R.string.help));
             showInfo();
+            PushManager.startWork(this, PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
         }
 
         registerReceiver(m_userIdReceiver, new IntentFilter(PushReveiver.USER_ID_INTENT));
@@ -141,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
         LocationClientOption option = new LocationClientOption();
         option.setIsNeedAddress(true);
+        option.setScanSpan(30 * 1000);
         mLocationClient.setLocOption(option);
 
         mLocationClient.start();
@@ -243,9 +247,10 @@ public class MainActivity extends AppCompatActivity {
                 m_userId = intent.getStringExtra(PushReveiver.EXTRA_USER_ID);
                 m_channelId = intent.getStringExtra(PushReveiver.EXTRA_CHANNEL_ID);
 
-                sp.edit().putString("userid", m_userId);
-                sp.edit().putString("channelid", m_channelId);
-                sp.edit().commit();
+                SharedPreferences.Editor edit = sp.edit();
+                edit.putString("userid", m_userId);
+                edit.putString("channelid", m_channelId);
+                edit.commit();
 
                 Log.i(TAG, "UserId=" + m_userId + ", ChannelId = " + m_channelId);
                 sendRequestToServer(m_userId, m_channelId);
@@ -319,6 +324,17 @@ public class MainActivity extends AppCompatActivity {
                 ivLoc.setImageResource(R.mipmap.loc_icon_press);
             }
 
+            AsyncHttpClient client = new AsyncHttpClient();
+            String url = String.format(HttpConstant.UPDATELOC, m_userId, m_channelId, m_longtitude, m_latitude, uname, face_id);
+            client.post(url, null, new JsonHttpResponseHandler(){
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.i(TAG, response.toString());
+                }
+            });
+
         }
     }
 
@@ -329,8 +345,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                String uname = response.optString("uname");
-                String face_id = response.optString("portrait");
+                uname = response.optString("uname");
+                face_id = response.optString("portrait");
 
                 Picasso.with(getApplicationContext()).load(HttpConstant.BAIDUFACE + face_id)
                         .into(ivFace);
@@ -346,4 +362,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(m_userIdReceiver);
+    }
 }

@@ -5,10 +5,11 @@ package com.hackthon.amberalertcn.client;
  */
 public class LostBean {
 
-    public String amber_alert_id, amber_alert_title, description, from_user_id, longitude, latitude, position;
+    public String alert_id, title, description, from_user_id, longitude, latitude, position;
+    public int count;
 
     public LostBean(){
-        amber_alert_title = "孩子丢了啊！";
+        title = "孩子丢了啊！";
 
         from_user_id = "user123";
 

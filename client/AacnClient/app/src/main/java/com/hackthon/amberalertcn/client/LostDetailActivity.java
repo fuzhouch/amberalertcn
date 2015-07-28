@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
 public class LostDetailActivity extends AppCompatActivity {
 
     private ListView list;
@@ -30,6 +33,11 @@ public class LostDetailActivity extends AppCompatActivity {
         header = getLayoutInflater().inflate(R.layout.item_detail_header, null);
         list.addHeaderView(header);
         list.setAdapter(adapter);
+    }
+
+    private void getDetail(){
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(HttpConstant.GETALERTBYID, new JsonHttpResponseHandler());
     }
 
     @Override

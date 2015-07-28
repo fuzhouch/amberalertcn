@@ -8,6 +8,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +41,35 @@ public class LostListActivity extends AppCompatActivity {
         lv = (ListView) findViewById(R.id.list);
         adapter = new LostAdapter();
         lv.setAdapter(adapter);
+    }
+
+    private void getAlerts(){
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(HttpConstant.GETALERTS, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                JSONArray arr = response.optJSONArray("alerts");
+                for (int i = 0; i < arr.length();i++) {
+                    LostBean lb = new LostBean();
+                    JSONArray replys = arr.optJSONArray(i);
+                    lb.count = replys.length() - 1;
+                    JSONArray main = replys.optJSONArray(0);
+                    lb.title = main.optString(0);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Toast.makeText(getApplicationContext(), responseString, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     class LostAdapter extends BaseAdapter{
@@ -71,7 +108,7 @@ public class LostListActivity extends AppCompatActivity {
             vh.tvUser.setText(bean.from_user_id);
             vh.tvDesc.setText(bean.description);
             vh.tvPosition.setText(bean.position);
-            vh.tvTitle.setText(bean.amber_alert_title);
+            vh.tvTitle.setText(bean.title);
             return convertView;
         }
 
