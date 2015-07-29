@@ -29,8 +29,7 @@ class Core(object):
             assert amber_user_id is not None
 
         dbaccess.update_device_location(amber_device_id, longitude, latitude)
-        print("User: %d, longitude: %s, latitude: %s -- " %\
-                (amber_user_id, longitude, latitude))
+        #print("User: %d, longitude: %s, latitude: %s -- " % (amber_user_id, longitude, latitude))
         resp = {\
                 "status_code": utils.httplib.OK,\
                 "amber_device_id": amber_device_id,\

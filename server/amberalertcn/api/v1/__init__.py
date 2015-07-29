@@ -12,8 +12,8 @@ api = amberalertcn.View('apiv1')
 @api.route('/updatelocation', methods=['POST'])
 def update_location():
     try:
-        user_id = flask.request.args.get('user_id')
-        channel_id = flask.request.args.get('channel_id')
+        user_id = int(flask.request.args.get('user_id'))
+        channel_id = int(flask.request.args.get('channel_id'))
         longitude = flask.request.args.get('longitude')
         latitude = flask.request.args.get('latitude')
         core = amberalertcn.Application.current_core()
@@ -26,8 +26,8 @@ def update_location():
 @api.route('/publishalert', methods=['POST'])
 def publish_alert():
     try:
-        user_id = flask.request.args.get('user_id')
-        channel_id = flask.request.args.get('channel_id')
+        user_id = int(flask.request.args.get('user_id'))
+        channel_id = int(flask.request.args.get('channel_id'))
         user_name = flask.request.args.get('user_name')
         user_face = flask.request.args.get('user_face')
         location = flask.request.args.get('location')
