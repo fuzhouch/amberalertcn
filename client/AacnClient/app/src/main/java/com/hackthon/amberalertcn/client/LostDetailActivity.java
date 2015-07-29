@@ -195,8 +195,8 @@ public class LostDetailActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
                     Toast.makeText(getApplicationContext(),
                             getResources().getString(R.string.sendfail),
                             Toast.LENGTH_SHORT).show();

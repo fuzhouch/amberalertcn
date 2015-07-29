@@ -44,6 +44,12 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/child"
+                android:layout_gravity="center"
+                android:id="@+id/imageView3" />
 
             <TextView
                 android:id="@+id/tv_desc"

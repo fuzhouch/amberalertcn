@@ -1,5 +1,6 @@
 package com.hackthon.amberalertcn.client;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SyncStatusObserver;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class LostListActivity extends AppCompatActivity {
     private List<LostBean> lostList;
     private LostAdapter adapter;
     private List<String> jsons;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,19 @@ public class LostListActivity extends AppCompatActivity {
         adapter = new LostAdapter();
         lv.setAdapter(adapter);
 
-        getAlerts();
-
-        jsons = new ArrayList<>();
         lv.setOnItemClickListener(item);
+
+        pd = new ProgressDialog(this);
+        jsons = new ArrayList<>();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        lostList.clear();
+        jsons.clear();
+        getAlerts();
     }
 
     AdapterView.OnItemClickListener item = new AdapterView.OnItemClickListener() {
@@ -64,12 +75,17 @@ public class LostListActivity extends AppCompatActivity {
 
     private void getAlerts(){
         AsyncHttpClient client = new AsyncHttpClient();
+
+        pd.setTitle(getResources().getString(R.string.sending));
+        pd.setMessage(getResources().getString(R.string.wait));
+        pd.show();
+
         client.get(HttpConstant.GETALERTS, new JsonHttpResponseHandler(){
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-
+                pd.dismiss();
                 JSONArray arr = response.optJSONArray("alerts");
                 for (int i = 0; i < arr.length();i++) {
                     LostBean lb = new LostBean();
@@ -88,6 +104,8 @@ public class LostListActivity extends AppCompatActivity {
                         lb.position = main.optString(6);
                         lb.time = main.optLong(7);
                         Log.i("lost", lb.toString());
+
+                        lostList.add(lb);
                     }
                     catch (Exception e){
                         Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_SHORT)
@@ -95,7 +113,6 @@ public class LostListActivity extends AppCompatActivity {
                         Log.e("tag", e.getMessage(), e);
                     }
 
-                    lostList.add(lb);
                 }
 
                 adapter.notifyDataSetChanged();
@@ -105,6 +122,7 @@ public class LostListActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 Toast.makeText(getApplicationContext(), responseString, Toast.LENGTH_SHORT).show();
+                pd.dismiss();
             }
         });
 

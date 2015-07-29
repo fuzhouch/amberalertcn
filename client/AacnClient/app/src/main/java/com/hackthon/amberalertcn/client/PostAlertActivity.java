@@ -80,7 +80,10 @@ public class PostAlertActivity extends AppCompatActivity {
     BDLocationListener loc = new BDLocationListener() {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
-              addr = bdLocation.getAddrStr();
+          addr = bdLocation.getAddrStr();
+          latitude = bdLocation.getLatitude();
+          longitude = bdLocation.getLongitude();
+          tvPosition.setText(addr);
         }
     };
 
@@ -116,7 +119,7 @@ public class PostAlertActivity extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
-        String formattedUrl = String.format(url, m_userId, m_channelId, longitude, latitude, Uri.encode(uname), face_id, addr);
+        String formattedUrl = String.format(url, m_userId, m_channelId, longitude, latitude, Uri.encode(uname), face_id, Uri.encode(addr));
         Log.i("XXX", "sendRequestToServer: " + formattedUrl + "\n" + se.toString());
         AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.post(this, formattedUrl, se, "application/json", alertHandler);

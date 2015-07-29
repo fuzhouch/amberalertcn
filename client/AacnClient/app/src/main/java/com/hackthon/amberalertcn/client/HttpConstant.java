@@ -10,7 +10,7 @@ import java.util.Locale;
  */
 public class HttpConstant {
 
-    public static final String URL_BASE = "http://atn1.dummydigit.net:8080/api/v1/";
+    public static final String URL_BASE = "http://atn1.dummydigit.net:8081/api/v1/";
     public static final String SENDMESSAGE = URL_BASE + "sendmessage?&user_id=%s&channel_id=%s&amber_alert_id=%d&user_name=%s&user_face=%s&location=%s";
     public static final String PUBLISHALERT = URL_BASE + "publishalert?&user_id=%s&channel_id=%s&longitude=%f&latitude=%f&user_name=%s&user_face=%s&location=%s";
     public static final String UPDATELOC = URL_BASE + "updatelocation?&user_id=%s&channel_id=%s&longitude=%f&latitude=%f&user_name=%s&user_face=%s";
