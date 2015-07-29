@@ -30,12 +30,13 @@ def publish_alert():
         channel_id = flask.request.args.get('channel_id')
         user_name = flask.request.args.get('user_name')
         user_face = flask.request.args.get('user_face')
+        location = flask.request.args.get('location')
         longitude = float(flask.request.args.get('longitude'))
         latitude = float(flask.request.args.get('latitude'))
         child_id = 0 # no use
         core = amberalertcn.Application.current_core()
         resp = core.publish_alert(user_id, channel_id, child_id, \
-                user_name, user_face, longitude, latitude)
+                user_name, user_face, location, longitude, latitude)
         return utils.make_json_response(resp)
     except Exception as e:
         print(e)

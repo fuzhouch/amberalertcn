@@ -39,7 +39,7 @@ class Core(object):
         return resp
 
     def publish_alert(self, user_id, channel_id, \
-            child_id, user_name, user_face, longitude, latitude):
+            child_id, user_name, user_face, location, longitude, latitude):
         dbaccess = self.__dbaccess
         amber_from_user_id = dbaccess.query_user_id_from_baidu(\
                 user_id, channel_id)
@@ -65,7 +65,8 @@ class Core(object):
                 amber_alert_id, # amber_alert_id
                 amber_from_user_id, # from_user_id
                 user_name,
-                user_face
+                user_face,
+                location
                 ]
         print("Send")
         p = pusher.Pusher(flask.current_app.config["AACN_SECRET"])
