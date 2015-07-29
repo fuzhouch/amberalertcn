@@ -59,17 +59,23 @@ public class LostListActivity extends AppCompatActivity {
                 for (int i = 0; i < arr.length();i++) {
                     LostBean lb = new LostBean();
 
-                    JSONArray replys = arr.optJSONArray(i);
-                    lb.count = replys.length() - 1;
-                    JSONArray main = replys.optJSONArray(0);
-                    lb.title = main.optString(0);
-                    lb.description = main.optString(1);
-                    lb.alert_id = main.optString(2);
-                    lb.from_user_id = main.optString(3);
-                    lb.uname = main.optString(4);
-                    lb.uface = main.optString(5);
-                    lb.time = main.optLong(6);
-                    Log.i("lost", lb.toString());
+                    try {
+                        JSONArray replys = arr.optJSONArray(i);
+                        lb.count = replys.length() - 1;
+                        JSONArray main = replys.optJSONArray(0);
+                        lb.title = main.optString(0);
+                        lb.description = main.optString(1);
+                        lb.alert_id = main.optString(2);
+                        lb.from_user_id = main.optString(3);
+                        lb.uname = main.optString(4);
+                        lb.uface = main.optString(5);
+                        lb.time = main.optLong(6);
+                        Log.i("lost", lb.toString());
+                    }
+                    catch (Exception e){
+                        Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_SHORT)
+                                .show();
+                    }
 
                     lostList.add(lb);
                 }

@@ -85,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Perform action on click
                 if (m_isLogin){
-                    sendRequestToServer(m_userId, m_channelId);
+                    Intent intent = new Intent(getApplicationContext(), PostAlertActivity.class);
+                    startActivity(intent);
+                    //sendRequestToServer(m_userId, m_channelId);
                 }else{
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivityForResult(intent, 100);
@@ -153,34 +155,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_list) {
-            startActivity(new Intent(this, MapActivity.class));
-            return true;
-        }
-
-        if (id == R.id.action_detail){
-            startActivity(new Intent(this, LostDetailActivity.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -198,48 +172,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class PublishAlertHandler extends JsonHttpResponseHandler {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            super.onSuccess(statusCode, headers, response);
-
-            try {
-                int status = response.getInt("status_code");
-                int count = response.optInt("alerted_count");
-                Toast.makeText(getApplicationContext(), "发送成功,"+ count +"人收到通知", Toast.LENGTH_SHORT).show();
-            } catch (JSONException e) {
-                Log.e(TAG, "Exception", e);
-            }
-        }
-
-        @Override
-        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-            super.onFailure(statusCode, headers, throwable, errorResponse);
-            Log.e(TAG, "ErrorArray", throwable);
-        }
-
-        @Override
-        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-            super.onFailure(statusCode, headers, throwable, errorResponse);
-            Log.e(TAG, "ErrorObj", throwable);
-        }
-
-        @Override
-        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-            super.onFailure(statusCode, headers, responseString, throwable);
-            Log.e(TAG, "Error:" + responseString, throwable);
-        }
-    }
-
-    private void sendRequestToServer(String userId, String channelId) {
-        // TODO: send to baidu
-
-        String url = HttpConstant.PUBLISHALERT;
-        String formattedUrl = String.format(url, m_userId, m_channelId, m_longtitude, m_latitude, Uri.encode(uname), face_id);
-        Log.i(TAG, "sendRequestToServer: " + formattedUrl);
-        AsyncHttpClient httpClient = new AsyncHttpClient();
-        httpClient.post(this, formattedUrl, null, "application/json", new PublishAlertHandler());
-    }
 
     private BroadcastReceiver m_userIdReceiver = new BroadcastReceiver() {
         @Override
@@ -255,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
                 edit.commit();
 
                 Log.i(TAG, "UserId=" + m_userId + ", ChannelId = " + m_channelId);
-                sendRequestToServer(m_userId, m_channelId);
             }
         }
     };
@@ -349,6 +280,9 @@ public class MainActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 uname = response.optString("uname");
                 face_id = response.optString("portrait");
+
+                sp.edit().putString("uname", uname).commit();
+                sp.edit().putString("face_id", face_id).commit();
 
                 Picasso.with(getApplicationContext()).load(HttpConstant.BAIDUFACE + face_id)
                         .into(ivFace);

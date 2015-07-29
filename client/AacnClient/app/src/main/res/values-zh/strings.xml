@@ -8,4 +8,11 @@
     <string name="help">求救</string>
     <string name="title_activity_lost_list">丢失列表</string>
     <string name="title_activity_map">选择位置</string>
+    <string name="no_position">暂无地址信息</string>
+    <string name="confirm">确认</string>
+    <string name="title_activity_post_alert">发送求救</string>
+    <string name="desc">描述</string>
+    <string name="image">图片</string>
+    <string name="position">位置(点击选择)</string>
+    <string name="wait">请稍等...</string>
 </resources>

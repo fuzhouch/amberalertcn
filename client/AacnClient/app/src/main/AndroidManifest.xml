@@ -123,6 +123,10 @@
             android:name=".MapActivity"
             android:label="@string/title_activity_map" >
         </activity>
+        <activity
+            android:name=".PostAlertActivity"
+            android:label="@string/title_activity_post_alert" >
+        </activity>
     </application>
 
 </manifest>
