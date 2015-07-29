@@ -30,12 +30,16 @@ def publish_alert():
         channel_id = flask.request.args.get('channel_id')
         user_name = flask.request.args.get('user_name')
         user_face = flask.request.args.get('user_face')
+        location = flask.request.args.get('location')
         longitude = float(flask.request.args.get('longitude'))
         latitude = float(flask.request.args.get('latitude'))
+        message_json_str = flask.request.data.encode('utf-8')
+        message_json = json.loads(message_json_str)
+        message = message_json["message"]
         child_id = 0 # no use
         core = amberalertcn.Application.current_core()
         resp = core.publish_alert(user_id, channel_id, child_id, \
-                user_name, user_face, longitude, latitude)
+                user_name, user_face, location, longitude, latitude, message)
         return utils.make_json_response(resp)
     except Exception as e:
         print(e)
@@ -47,11 +51,14 @@ def send_message():
         user_id = int(flask.request.args.get('user_id'))
         channel_id = int(flask.request.args.get('channel_id'))
         receiver = int(flask.request.args.get('amber_alert_id'))
+        user_name = flask.request.args.get('user_name')
+        user_face = flask.request.args.get('user_face')
+        location = flask.request.args.get('location')
         message_json_str = flask.request.data.encode('utf-8')
         message_json = json.loads(message_json_str)
         message = message_json["message"]
         core = amberalertcn.Application.current_core()
-        resp = core.send_message(user_id, channel_id, receiver, message)
+        resp = core.send_message(user_id, channel_id, receiver, user_name, user_face, location, message)
         return utils.make_json_response(resp)
     except Exception as e:
         print(e)
