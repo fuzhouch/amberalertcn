@@ -39,7 +39,7 @@ class Core(object):
         return resp
 
     def publish_alert(self, user_id, channel_id, \
-            child_id, user_name, user_face, location, longitude, latitude):
+            child_id, user_name, user_face, location, longitude, latitude, message):
         dbaccess = self.__dbaccess
         amber_from_user_id = dbaccess.query_user_id_from_baidu(\
                 user_id, channel_id)
@@ -59,19 +59,19 @@ class Core(object):
                     "status_code": utils.httplib.OK,\
                     "alerted_count": 0}
 
-        message = [
-                "警告：有孩子走失！", # title
-                "三岁，有点胖，大红帽子绿上衣，包包头", # description
+        message_info = [
+                u"警告：有孩子走失！".encode('utf-8'), # title
+                message.encode('utf-8'), # description
                 amber_alert_id, # amber_alert_id
                 amber_from_user_id, # from_user_id
-                user_name,
-                user_face,
-                location
+                user_name.encode('utf-8'),
+                user_face.encode('utf-8'),
+                location.encode('utf-8')
                 ]
         print("Send")
         p = pusher.Pusher(flask.current_app.config["AACN_SECRET"])
-        result_json = p.pushAlert_to_users(matched_device_list, message)
-        dbaccess.add_message_to_chatroom(amber_alert_id, message)
+        result_json = p.pushAlert_to_users(matched_device_list, message_info)
+        dbaccess.add_message_to_chatroom(amber_alert_id, message_info)
         print("Done")
         # TBD result_json will be handled later.
 
@@ -79,7 +79,7 @@ class Core(object):
                 "alerted_count" : len(matched_device_list)\
                 }
 
-    def send_message(self, user_id, channel_id, amber_alert_id, message):
+    def send_message(self, user_id, channel_id, amber_alert_id, user_name, user_face, location, message):
         dbaccess = self.__dbaccess
         amber_from_user_id = dbaccess.query_user_id_from_baidu(\
                 user_id, channel_id)
@@ -103,7 +103,10 @@ class Core(object):
                 u"我看见那孩子了！".encode('utf-8'), # title
                 message.encode('utf-8'), # description
                 amber_alert_id,
-                amber_from_user_id
+                amber_from_user_id,
+                user_name.encode('utf-8'),
+                user_face.encode('utf-8'),
+                location.encode('utf-8')
                 ]
         p = pusher.Pusher(flask.current_app.config["AACN_SECRET"])
         result_json = p.pushUpdate_to_users(matched_device_list, message_info)
