@@ -100,36 +100,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                startActivity(new Intent(getApplicationContext(), LostListActivity.class));
-               /*AsyncHttpClient client = new AsyncHttpClient();
-               String url = HttpConstant.SENDMESSAGE;
-               url = String.format(url, m_userId, m_channelId, 1);
-               RequestParams rp = new RequestParams();
-                StringEntity se = null;
-                try {
-                    se = new StringEntity("{ \"message\":\"熊孩子再次跑潘家园去了\"}", "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                Log.i(TAG, url);
-               client.post(getApplicationContext(), url, se, "application/json", new JsonHttpResponseHandler(){
-
-                   @Override
-                   public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                       super.onSuccess(statusCode, headers, response);
-                       try {
-                           Log.i(TAG, response.toString(2));
-                       } catch (JSONException e) {
-                           e.printStackTrace();
-                       }
-                   }
-
-                   @Override
-                   public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                       super.onFailure(statusCode, headers, responseString, throwable);
-                       Log.i(TAG, statusCode +  " " + headers);
-                   }
-               });
-                */
             }
         });
 

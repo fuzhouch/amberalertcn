@@ -4,7 +4,7 @@
     <string name="detail">详情</string>
     <string name="list">丢失列表</string>
     <string name="login">登录</string>
-    <string name="send">发送消息</string>
+    <string name="send">发送</string>
     <string name="help">求救</string>
     <string name="title_activity_lost_list">丢失列表</string>
     <string name="title_activity_map">选择位置</string>
@@ -15,4 +15,10 @@
     <string name="image">图片</string>
     <string name="position">位置(点击选择)</string>
     <string name="wait">请稍等...</string>
+    <string name="title_activity_lost_detail">丢失详情</string>
+    <string name="empty_msg">请输入内容!</string>
+    <string name="sendtip">发送成功,%d人收到通知</string>
+    <string name="sendfail">发送失败</string>
+    <string name="sending">发送中</string>
+    <string name="sendsuccess">发送成功</string>
 </resources>

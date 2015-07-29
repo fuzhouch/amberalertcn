@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +17,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +42,8 @@ public class PostAlertActivity extends AppCompatActivity {
     String uname, face_id, m_userId, m_channelId;
 
     ProgressDialog pd;
+
+    LocationClient locClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +67,22 @@ public class PostAlertActivity extends AppCompatActivity {
         m_userId = sp.getString("userid", "");
 
         pd = new ProgressDialog(this);
+
+        locClient = new LocationClient(this);
+        LocationClientOption option = new LocationClientOption();
+        option.setScanSpan(30 * 1000);
+        option.setIsNeedAddress(true);
+        locClient.setLocOption(option);
+        locClient.registerLocationListener(loc);
+        locClient.start();
     }
+
+    BDLocationListener loc = new BDLocationListener() {
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+              addr = bdLocation.getAddrStr();
+        }
+    };
 
     View.OnClickListener click = new View.OnClickListener() {
         @Override
@@ -70,18 +93,34 @@ public class PostAlertActivity extends AppCompatActivity {
             }
 
             if (v.getId() == R.id.btn_confirm){
-                sendRequestToServer();
+                String msg = etDesc.getText().toString();
+                if (TextUtils.isEmpty(msg)){
+                    Toast.makeText(getApplicationContext(),
+                            getResources().getString(R.string.empty_msg), Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+
+                sendRequestToServer(msg);
             }
         }
     };
 
-    private void sendRequestToServer() {
+    private void sendRequestToServer(String msg) {
         String url = HttpConstant.PUBLISHALERT;
-        String formattedUrl = String.format(url, m_userId, m_channelId, longitude, latitude, Uri.encode(uname), face_id);
-        Log.i("XXX", "sendRequestToServer: " + formattedUrl);
+        JSONObject json = new JSONObject();
+        StringEntity se = null;
+        try {
+            json.put("message", msg);
+            se = new StringEntity(json.toString(), "UTF-8");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String formattedUrl = String.format(url, m_userId, m_channelId, longitude, latitude, Uri.encode(uname), face_id, addr);
+        Log.i("XXX", "sendRequestToServer: " + formattedUrl + "\n" + se.toString());
         AsyncHttpClient httpClient = new AsyncHttpClient();
-        httpClient.post(this, formattedUrl, null, "application/json", alertHandler);
-        pd.setTitle("Sending");
+        httpClient.post(this, formattedUrl, se, "application/json", alertHandler);
+        pd.setTitle(getResources().getString(R.string.sending));
         pd.setMessage(getResources().getString(R.string.wait));
         pd.show();
     }
@@ -94,7 +133,10 @@ public class PostAlertActivity extends AppCompatActivity {
             try {
                 int status = response.getInt("status_code");
                 int count = response.optInt("alerted_count");
-                Toast.makeText(getApplicationContext(), "发送成功,"+ count +"人收到通知", Toast.LENGTH_SHORT).show();
+                String tips = getResources().getString(R.string.sendtip);
+                tips = String.format(tips, count);
+                Toast.makeText(getApplicationContext(), tips, Toast.LENGTH_SHORT).show();
+                finish();
             } catch (JSONException e) {
                 Log.e("XXX", "Exception", e);
             }
@@ -104,7 +146,9 @@ public class PostAlertActivity extends AppCompatActivity {
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
             super.onFailure(statusCode, headers, throwable, errorResponse);
             pd.dismiss();
-            Toast.makeText(getApplicationContext(), "发送失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),
+                    getResources().getString(R.string.sendfail),
+                    Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -126,7 +170,10 @@ public class PostAlertActivity extends AppCompatActivity {
             longitude = data.getDoubleExtra("longitude", 0);
             addr = data.getStringExtra("addr");
 
-            tvPosition.setText(addr);
+            if (!TextUtils.isEmpty(addr)) {
+                tvPosition.setText(addr);
+                locClient.stop();
+            }
         }
     }
 }

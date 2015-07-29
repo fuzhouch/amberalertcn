@@ -18,8 +18,8 @@
 
             <ImageView
                 android:id="@+id/iv_face"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@mipmap/ic_launcher" />
 
             <TextView
@@ -27,6 +27,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New Text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="07-39 17:11"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:id="@+id/tv_time" />
         </LinearLayout>
 
         <LinearLayout
@@ -43,11 +51,25 @@
                 android:layout_height="wrap_content"
                 android:text="Detail message." />
 
-            <TextView
-                android:id="@+id/tv_loc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="location" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|right">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@mipmap/loc_icon_press" />
+
+                <TextView
+                    android:id="@+id/tv_loc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="location" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

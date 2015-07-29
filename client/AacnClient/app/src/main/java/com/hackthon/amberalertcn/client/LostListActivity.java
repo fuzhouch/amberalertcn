@@ -1,5 +1,6 @@
 package com.hackthon.amberalertcn.client;
 
+import android.content.Intent;
 import android.content.SyncStatusObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,6 +31,7 @@ public class LostListActivity extends AppCompatActivity {
     private ListView lv;
     private List<LostBean> lostList;
     private LostAdapter adapter;
+    private List<String> jsons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,19 @@ public class LostListActivity extends AppCompatActivity {
         lv.setAdapter(adapter);
 
         getAlerts();
+
+        jsons = new ArrayList<>();
+        lv.setOnItemClickListener(item);
     }
+
+    AdapterView.OnItemClickListener item = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent it = new Intent(getApplicationContext(), LostDetailActivity.class);
+            it.putExtra("detail", jsons.get(position));
+            startActivity(it);
+        }
+    };
 
     private void getAlerts(){
         AsyncHttpClient client = new AsyncHttpClient();
@@ -61,6 +76,7 @@ public class LostListActivity extends AppCompatActivity {
 
                     try {
                         JSONArray replys = arr.optJSONArray(i);
+                        jsons.add(replys.toString());
                         lb.count = replys.length() - 1;
                         JSONArray main = replys.optJSONArray(0);
                         lb.title = main.optString(0);
@@ -69,12 +85,14 @@ public class LostListActivity extends AppCompatActivity {
                         lb.from_user_id = main.optString(3);
                         lb.uname = main.optString(4);
                         lb.uface = main.optString(5);
-                        lb.time = main.optLong(6);
+                        lb.position = main.optString(6);
+                        lb.time = main.optLong(7);
                         Log.i("lost", lb.toString());
                     }
                     catch (Exception e){
                         Toast.makeText(getApplicationContext(), "Error!", Toast.LENGTH_SHORT)
                                 .show();
+                        Log.e("tag", e.getMessage(), e);
                     }
 
                     lostList.add(lb);
